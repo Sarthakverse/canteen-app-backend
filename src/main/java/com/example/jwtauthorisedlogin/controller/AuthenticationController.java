@@ -4,6 +4,7 @@ import com.example.jwtauthorisedlogin.authorization.AuthenticationRequest;
 import com.example.jwtauthorisedlogin.authorization.AuthenticationResponse;
 import com.example.jwtauthorisedlogin.authorization.RegisterRequest;
 import com.example.jwtauthorisedlogin.service.AuthenticationService;
+import com.example.jwtauthorisedlogin.user.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,11 +22,17 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody RegisterRequest request
     ){
-        return ResponseEntity.ok(service.register(request));
+        String roleString = String.valueOf(request.getRole());
+
+        if (!roleString.equals("USER") && !roleString.equals("ADMIN")) {
+            return ResponseEntity.badRequest().build();
+        }
+        Role userRole = Role.valueOf(roleString);
+        return ResponseEntity.ok(service.register(request, userRole));
     }
 
-    @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(
+    @PostMapping("/login")
+    public ResponseEntity<AuthenticationResponse> login(
             @RequestBody AuthenticationRequest request
     ){
         return ResponseEntity.ok(service.authenticate(request));
