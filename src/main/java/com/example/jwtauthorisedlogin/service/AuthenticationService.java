@@ -19,6 +19,11 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+
+    //add logic here for generating random string token that is used
+    // to send the email for resetting password
+
+
     public AuthenticationResponse register(RegisterRequest request, Role userRole) {
         var user = User.builder()
                 .fullName(request.getFullName())
@@ -49,4 +54,6 @@ public class AuthenticationService {
                     .token(jwtToken)
                     .build();
     }
+
+
 }
