@@ -25,6 +25,9 @@ public class AuthenticationService {
 
 
     public AuthenticationResponse register(RegisterRequest request, Role userRole) {
+        if (repository.findByEmail(request.getEmail()).isPresent()) {
+            return AuthenticationResponse.builder().token("User already registered").build();
+        }
         var user = User.builder()
                 .fullName(request.getFullName())
                 .email(request.getEmail())
