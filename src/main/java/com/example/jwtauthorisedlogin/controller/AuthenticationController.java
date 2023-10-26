@@ -37,4 +37,12 @@ public class AuthenticationController {
     ){
         return ResponseEntity.ok(service.authenticate(request));
     }
+
+//    @PostMapping("/forgot-password")
+    //when user gives his email and clicks on submit
+
+//    @PostMapping("/reset-password")
+    //after receiving email and verifying password should be reset
+
+
 }
