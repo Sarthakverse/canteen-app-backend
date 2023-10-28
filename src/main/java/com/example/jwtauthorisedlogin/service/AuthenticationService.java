@@ -26,7 +26,7 @@ public class AuthenticationService {
     private final OtpRepository otpRepository;
     private final EmailService emailService;
     private final OtpService otpService;
-    private static final int OTP_EXPIRATION_MINUTE=1;
+    private static final int OTP_EXPIRATION_MINUTE=10;
 
     public AuthenticationResponse register(RegisterRequest request, Role userRole) {
 
