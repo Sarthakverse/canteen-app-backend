@@ -1,10 +1,7 @@
 package com.example.jwtauthorisedlogin.user;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,8 +20,14 @@ public class User implements UserDetails /*implementing this makes it easy to us
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String fullName;
+//    @Column(unique = true)
     private String email;
     private String password;
+    private Boolean isVerified;
+
+    public void setIsVerified(boolean verified) {
+        isVerified = verified;
+    }
 
     @Enumerated(EnumType.STRING)
     private Role role;
