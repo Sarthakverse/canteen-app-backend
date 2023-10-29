@@ -26,7 +26,7 @@ public class AuthenticationService {
     private final OtpRepository otpRepository;
     private final EmailService emailService;
     private final OtpService otpService;
-    private static final int OTP_EXPIRATION_MINUTE=1;
+    private static final int OTP_EXPIRATION_MINUTE=10;
 
     public AuthenticationResponse register(RegisterRequest request, Role userRole) {
 
@@ -183,6 +183,33 @@ public class AuthenticationService {
 
     }
 
+    public AuthenticationResponse resend(ResendRequest request){
+
+
+        LocalDateTime expirationTime=LocalDateTime.now().plusMinutes(OTP_EXPIRATION_MINUTE);
+        var otpUser = otpRepository.findByEmail(request.getEmail()).orElseThrow();
+
+        if(LocalDateTime.now().isBefore(otpUser.getExpirationTime().minusMinutes(9))){
+            return AuthenticationResponse.builder()
+                    .token("Please wait for 1 minute before sending another OTP")
+                    .build();
+        }
+
+
+        String OTP=GenerateOtp.generateOtp();
+
+        OtpEntity otpEntity = new OtpEntity();
+        otpEntity.setOtp(OTP);
+        otpEntity.setEmail(request.getEmail());
+        otpEntity.setExpirationTime(expirationTime);
+        otpRepository.save(otpEntity);
+
+        emailService.sendOtpEmail(request.getEmail(),OTP);
+
+        return AuthenticationResponse.builder()
+                .token("OTP sent again")
+                .build();
+    }
 
 
 }
