@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 public class EmailService {
     private JavaMailSender javaMailSender;
 
+
     public EmailService(JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
     }
@@ -17,7 +18,7 @@ public class EmailService {
         message.setTo(toEmail);
         message.setSubject("OTP Verification");
         message.setText("Your OTP for email verification is: " + OTP);
-
+        message.setFrom("bitebliss.app@gmail.com");
         javaMailSender.send(message);
     }
 }

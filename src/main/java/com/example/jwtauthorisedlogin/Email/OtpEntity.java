@@ -1,11 +1,9 @@
 package com.example.jwtauthorisedlogin.Email;
 
 import jakarta.persistence.*;
-import jdk.jfr.DataAmount;
 import lombok.Data;
-
 import java.time.LocalDateTime;
-import java.util.Date;
+
 
 @Data
 @Table(name = "OTP")
