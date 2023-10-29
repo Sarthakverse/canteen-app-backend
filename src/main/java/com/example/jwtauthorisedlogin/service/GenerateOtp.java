@@ -7,7 +7,7 @@ import java.util.Random;
 
 @Service
 public class GenerateOtp {
-    private static final String CHARACTERS = "0123456789";
+    private static final String CHARACTERS = "123456789";
     private static final int OTP_LENGTH = 6;
 
     public static String generateOtp() {
