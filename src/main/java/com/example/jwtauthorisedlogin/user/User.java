@@ -16,11 +16,9 @@ import java.util.List;
 @Builder //helps in building up the object
 @Table(name = "_user_")
 public class User implements UserDetails /*implementing this makes it easy to use spring security*/ {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+
     private String fullName;
-//    @Column(unique = true)
+    @Id
     private String email;
     private String password;
     private Boolean isVerified;

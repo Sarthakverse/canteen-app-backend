@@ -43,4 +43,24 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.authenticate(request));
     }
 
+    @PostMapping("/forgot-password")
+    public ResponseEntity<AuthenticationResponse> forgot(
+            @RequestBody ForgotPasswordRequest request
+    ){
+        return ResponseEntity.ok(service.forgot(request));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<AuthenticationResponse> reset(
+            @RequestBody ResetPasswordRequest request
+    ){
+        return ResponseEntity.ok(service.reset(request));
+    }
+    @PostMapping("/resend-otp")
+    public ResponseEntity<AuthenticationResponse> resend(
+            @RequestBody ResendRequest request
+    ){
+        return ResponseEntity.ok(service.resend(request));
+    }
+
 }
