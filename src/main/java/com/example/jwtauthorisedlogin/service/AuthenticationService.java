@@ -13,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -26,16 +28,24 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     private static final int OTP_EXPIRATION_MINUTE=10;
+    private static final String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+    private final Pattern emailPattern = Pattern.compile(emailRegex);
     public AuthenticationResponse register(RegisterRequest request, Role userRole) {
 
         LocalDateTime expirationTime=LocalDateTime.now().plusMinutes(OTP_EXPIRATION_MINUTE);
 
         var user=new User();
 
+        if (!isValidEmail(request.getEmail())) {
+            return AuthenticationResponse.builder()
+                    .token("Invalid email format")
+                    .build();
+        }
+
         if (repository.findByEmail(request.getEmail()).isEmpty()) {
 
             user = User.builder()
-                    .fullName(request.getFullName())
+                    .fullName(request.getFullName().trim())
                     .email(request.getEmail())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .isVerified(false)
@@ -49,7 +59,7 @@ public class AuthenticationService {
                         .token("User already exists")
                         .build();
             }
-            user.setFullName(request.getFullName());
+            user.setFullName(request.getFullName().trim());
             user.setEmail(request.getEmail());
             user.setPassword(passwordEncoder.encode(request.getPassword()));
             user.setIsVerified(false);
@@ -74,6 +84,12 @@ public class AuthenticationService {
                 .build();
 
     }
+
+    private boolean isValidEmail(String email) {
+        Matcher matcher = emailPattern.matcher(email);
+        return matcher.matches();
+    }
+
     public AuthenticationResponse verify(VerifyRequest request){
 
         if (otpRepository.findByEmail(request.getEmail()).isEmpty()) {
@@ -109,6 +125,12 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
 
         var userOptional = repository.findByEmail(request.getEmail());
+
+        if (!isValidEmail(request.getEmail())) {
+            return AuthenticationResponse.builder()
+                    .token("Invalid email format")
+                    .build();
+        }
 
         if(userOptional.isEmpty()){
             return AuthenticationResponse.builder()
