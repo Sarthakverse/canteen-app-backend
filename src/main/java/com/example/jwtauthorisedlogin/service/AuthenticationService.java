@@ -9,13 +9,10 @@ import com.example.jwtauthorisedlogin.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-
-import static org.springframework.util.ClassUtils.isPresent;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +26,6 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     private static final int OTP_EXPIRATION_MINUTE=10;
-
     public AuthenticationResponse register(RegisterRequest request, Role userRole) {
 
         LocalDateTime expirationTime=LocalDateTime.now().plusMinutes(OTP_EXPIRATION_MINUTE);
@@ -112,6 +108,15 @@ public class AuthenticationService {
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
 
+        var userOptional = repository.findByEmail(request.getEmail());
+
+        if(userOptional.isEmpty()){
+            return AuthenticationResponse.builder()
+                    .token("User not Registered")
+                    .build();
+        }
+
+        var user = userOptional.get();
            try{
                authenticationManager.authenticate(
                        new UsernamePasswordAuthenticationToken(
@@ -119,24 +124,17 @@ public class AuthenticationService {
                                request.getPassword()
                        )
                );
-           }catch(AuthenticationException e)
-           {
-               System.out.println("invalid credentials");
            }
-
-
-
-        var user = repository.findByEmail(request.getEmail()).orElseThrow();
+           catch(Exception e)
+           {
+               return  AuthenticationResponse.builder()
+                       .token("Invalid Credentials")
+                       .build();
+           }
 
         if(!(user.getIsVerified())){
             return AuthenticationResponse.builder()
                     .token("User Not Verified")
-                    .build();
-        }
-        boolean checkPassword = passwordEncoder.matches(request.getPassword(), user.getPassword());
-        if(!checkPassword){
-            return AuthenticationResponse.builder()
-                    .token("Invalid Credentials")
                     .build();
         }
 
@@ -145,6 +143,7 @@ public class AuthenticationService {
                     .token(jwtToken)
                     .build();
     }
+
 
     public AuthenticationResponse forgot(ForgotPasswordRequest request){
 
@@ -179,25 +178,41 @@ public class AuthenticationService {
 
     }
 
-    public AuthenticationResponse reset(ResetPasswordRequest request){
 
+    public AuthenticationResponse resetVerifyOtp(verifyResetPasswordRequest request){
         String OTP = otpService.getOtpByEmail(request.getEmail());
+        var otpUser = otpRepository.findByEmail(request.getEmail()).orElseThrow();
 
-        if(!(request.getOtp().equals(OTP))){
-            return AuthenticationResponse.builder().token("Incorrect OTP").build();
+        if(LocalDateTime.now().isAfter(otpUser.getExpirationTime())){
+            return AuthenticationResponse.builder()
+                    .token("OTP Expired")
+                    .build();
         }
+        if(request.getOtp().equals(OTP))
+        {
+            return AuthenticationResponse.builder()
+                    .token("Otp Verified Successfully")
+                    .build();
+        }
+        else {
+            return AuthenticationResponse.builder()
+                    .token("incorrect Otp")
+                    .build();
+        }
+    }
 
-        User user = repository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("OTP not found for email: " + request.getEmail()));
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+    public AuthenticationResponse resetPassword(PasswordResetRequest request){
+        var user = repository.findByEmail(request.getEmail()).orElseThrow();
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         repository.save(user);
 
         return AuthenticationResponse.builder()
-                .token("Reset Password Successfully")
+                .token("Password has been reset Successfully")
                 .build();
 
-    }
 
+    }
     public AuthenticationResponse resend(ResendRequest request){
 
 

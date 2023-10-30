@@ -5,7 +5,6 @@ import com.example.jwtauthorisedlogin.service.AuthenticationService;
 import com.example.jwtauthorisedlogin.user.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,11 +49,16 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.forgot(request));
     }
 
-    @PostMapping("/reset-password")
+    @PostMapping("/reset-password-verify")
     public ResponseEntity<AuthenticationResponse> reset(
-            @RequestBody ResetPasswordRequest request
+            @RequestBody verifyResetPasswordRequest request
     ){
-        return ResponseEntity.ok(service.reset(request));
+        return ResponseEntity.ok(service.resetVerifyOtp(request));
+    }
+
+    @PostMapping("/reset-new-password")
+    public ResponseEntity<AuthenticationResponse> resetNewPassword(@RequestBody PasswordResetRequest request){
+        return ResponseEntity.ok(service.resetPassword(request));
     }
     @PostMapping("/resend-otp")
     public ResponseEntity<AuthenticationResponse> resend(

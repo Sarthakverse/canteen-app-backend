@@ -6,8 +6,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResetPasswordRequest {
+public class verifyResetPasswordRequest {
     private String email;
-    private String password;
     private String otp;
 }
