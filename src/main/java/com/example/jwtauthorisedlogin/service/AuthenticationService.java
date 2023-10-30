@@ -35,7 +35,7 @@ public class AuthenticationService {
         if (repository.findByEmail(request.getEmail()).isEmpty()) {
 
             user = User.builder()
-                    .fullName(request.getFullName())
+                    .fullName(request.getFullName().trim())
                     .email(request.getEmail())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .isVerified(false)
@@ -49,7 +49,7 @@ public class AuthenticationService {
                         .token("User already exists")
                         .build();
             }
-            user.setFullName(request.getFullName());
+            user.setFullName(request.getFullName().trim());
             user.setEmail(request.getEmail());
             user.setPassword(passwordEncoder.encode(request.getPassword()));
             user.setIsVerified(false);
