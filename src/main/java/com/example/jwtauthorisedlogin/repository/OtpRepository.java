@@ -1,7 +1,6 @@
 package com.example.jwtauthorisedlogin.repository;
 
 import com.example.jwtauthorisedlogin.Email.OtpEntity;
-import com.example.jwtauthorisedlogin.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

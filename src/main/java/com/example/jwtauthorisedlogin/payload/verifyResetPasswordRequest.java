@@ -1,4 +1,4 @@
-package com.example.jwtauthorisedlogin.authorization;
+package com.example.jwtauthorisedlogin.payload;
 
 import lombok.*;
 

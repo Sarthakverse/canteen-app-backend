@@ -1,6 +1,6 @@
 package com.example.jwtauthorisedlogin.controller;
 
-import com.example.jwtauthorisedlogin.authorization.*;
+import com.example.jwtauthorisedlogin.payload.*;
 import com.example.jwtauthorisedlogin.service.AuthenticationService;
 import com.example.jwtauthorisedlogin.user.Role;
 import lombok.RequiredArgsConstructor;
@@ -25,46 +25,54 @@ public class AuthenticationController {
             return ResponseEntity.badRequest().build();
         }
         Role userRole = Role.valueOf(roleString);
-        return ResponseEntity.ok(service.register(request, userRole));
+        return service.register(request,userRole);
+       // return ResponseEntity.ok(service.register(request, userRole));
     }
 
     @PostMapping("/verify-email")
     public ResponseEntity<AuthenticationResponse> verify(
             @RequestBody VerifyRequest request
     ) {
-        return ResponseEntity.ok(service.verify(request));
+        return service.verify(request);
+        //return ResponseEntity.ok(service.verify(request));
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(
             @RequestBody AuthenticationRequest request
     ) {
-        return ResponseEntity.ok(service.authenticate(request));
+        return service.authenticate(request);
+        //return ResponseEntity.ok(service.authenticate(request));
     }
 
     @PostMapping("/forgot-password")
     public ResponseEntity<AuthenticationResponse> forgot(
             @RequestBody ForgotPasswordRequest request
     ){
-        return ResponseEntity.ok(service.forgot(request));
+        return service.forgot(request);
+//        return ResponseEntity.ok(service.forgot(request));
     }
 
     @PostMapping("/reset-password-verify")
     public ResponseEntity<AuthenticationResponse> reset(
             @RequestBody verifyResetPasswordRequest request
     ){
-        return ResponseEntity.ok(service.resetVerifyOtp(request));
+        return service.resetVerifyOtp(request);
+        // return ResponseEntity.ok(service.resetVerifyOtp(request));
+
     }
 
     @PostMapping("/reset-new-password")
     public ResponseEntity<AuthenticationResponse> resetNewPassword(@RequestBody PasswordResetRequest request){
-        return ResponseEntity.ok(service.resetPassword(request));
+        return service.resetPassword(request);
+        //return ResponseEntity.ok(service.resetPassword(request));
     }
     @PostMapping("/resend-otp")
     public ResponseEntity<AuthenticationResponse> resend(
             @RequestBody ResendRequest request
     ){
-        return ResponseEntity.ok(service.resend(request));
+        return service.resend(request);
+//        return ResponseEntity.ok(service.resend(request));
     }
 
 }

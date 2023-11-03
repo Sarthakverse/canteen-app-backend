@@ -2,6 +2,7 @@ package com.example.jwtauthorisedlogin.user;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,10 +14,9 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder //helps in building up the object
+@Builder
 @Table(name = "_user_")
-public class User implements UserDetails /*implementing this makes it easy to use spring security*/ {
-
+public class User implements UserDetails {
     private String fullName;
     @Id
     private String email;
