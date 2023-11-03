@@ -1,20 +1,20 @@
 package com.example.jwtauthorisedlogin.service;
 
 import com.example.jwtauthorisedlogin.Email.OtpEntity;
-import com.example.jwtauthorisedlogin.authorization.*;
+import com.example.jwtauthorisedlogin.payload.*;
 import com.example.jwtauthorisedlogin.repository.OtpRepository;
 import com.example.jwtauthorisedlogin.user.Role;
 import com.example.jwtauthorisedlogin.user.User;
 import com.example.jwtauthorisedlogin.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -28,19 +28,11 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     private static final int OTP_EXPIRATION_MINUTE=10;
-    private static final String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
-    private final Pattern emailPattern = Pattern.compile(emailRegex);
-    public AuthenticationResponse register(RegisterRequest request, Role userRole) {
+    public ResponseEntity<AuthenticationResponse> register(RegisterRequest request, Role userRole) {
 
         LocalDateTime expirationTime=LocalDateTime.now().plusMinutes(OTP_EXPIRATION_MINUTE);
 
         var user=new User();
-
-        if (!isValidEmail(request.getEmail())) {
-            return AuthenticationResponse.builder()
-                    .token("Invalid email format")
-                    .build();
-        }
 
         if (repository.findByEmail(request.getEmail()).isEmpty()) {
 
@@ -55,9 +47,10 @@ public class AuthenticationService {
         else{
             user = repository.findByEmail(request.getEmail()).orElseThrow(() -> new RuntimeException(("user not found in database")+request.getEmail()));
             if(user.getIsVerified()){
-                return AuthenticationResponse.builder()
-                        .token("User already exists")
-                        .build();
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(AuthenticationResponse.builder().message("User Already Exists").build());
+//                AuthenticationResponse.builder()
+//                        .token("User already exists")
+//                        .build();
             }
             user.setFullName(request.getFullName().trim());
             user.setEmail(request.getEmail());
@@ -70,6 +63,7 @@ public class AuthenticationService {
 
         String OTP=GenerateOtp.generateOtp();
 
+
         OtpEntity otpEntity = new OtpEntity();
         otpEntity.setOtp(OTP);
         otpEntity.setEmail(request.getEmail());
@@ -79,35 +73,35 @@ public class AuthenticationService {
 
        repository.save(user);
 
-        return AuthenticationResponse.builder()
-                .token("Check your email for OTP")
-                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(AuthenticationResponse.builder().message("Check your email for otp").build());
+//                AuthenticationResponse.builder()
+//                .token("Check your email for OTP")
+//                .build();
 
     }
 
-    private boolean isValidEmail(String email) {
-        Matcher matcher = emailPattern.matcher(email);
-        return matcher.matches();
-    }
 
-    public AuthenticationResponse verify(VerifyRequest request){
+    public ResponseEntity<AuthenticationResponse> verify(VerifyRequest request){
 
         if (otpRepository.findByEmail(request.getEmail()).isEmpty()) {
-            return AuthenticationResponse.builder().token("No OTP generated").build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(AuthenticationResponse.builder().message("No OTP genereated").build());
+                    //AuthenticationResponse.builder().token("No OTP generated").build();
         }
 
         String OTP = otpService.getOtpByEmail(request.getEmail());
 
         if(!(request.getOtp().equals(OTP))){
-            return AuthenticationResponse.builder().token("Incorrect OTP").build();
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthenticationResponse.builder().message("Incorrect OTP").build());
+                    //AuthenticationResponse.builder().token("Incorrect OTP").build();
         }
 
         var otpUser = otpRepository.findByEmail(request.getEmail()).orElseThrow();
 
         if(LocalDateTime.now().isAfter(otpUser.getExpirationTime())){
-            return AuthenticationResponse.builder()
-                    .token("OTP Expired")
-                    .build();
+            return    ResponseEntity.status(HttpStatus.NOT_FOUND).body(AuthenticationResponse.builder().message("OTP expired").build());
+//                    AuthenticationResponse.builder()
+//                    .token("OTP Expired")
+//                    .build();
         }
 
         var user = repository.findByEmail(request.getEmail()).orElseThrow();
@@ -116,26 +110,22 @@ public class AuthenticationService {
         repository.save(user);
 
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(AuthenticationResponse.builder().token(jwtToken).build());
+//                AuthenticationResponse.builder()
+//                .token(jwtToken)
+//                .build();
     }
 
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public ResponseEntity<AuthenticationResponse> authenticate(AuthenticationRequest request) {
 
         var userOptional = repository.findByEmail(request.getEmail());
 
-        if (!isValidEmail(request.getEmail())) {
-            return AuthenticationResponse.builder()
-                    .token("Invalid email format")
-                    .build();
-        }
-
         if(userOptional.isEmpty()){
-            return AuthenticationResponse.builder()
-                    .token("User not Registered")
-                    .build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(AuthenticationResponse.builder().message("User not Registered").build());
+//                    AuthenticationResponse.builder()
+//                    .token("User not Registered")
+//                    .build();
         }
 
         var user = userOptional.get();
@@ -149,37 +139,42 @@ public class AuthenticationService {
            }
            catch(Exception e)
            {
-               return  AuthenticationResponse.builder()
-                       .token("Invalid Credentials")
-                       .build();
+               return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthenticationResponse.builder().message("Invalid Credentials").build());
+//                       AuthenticationResponse.builder()
+//                       .token("Invalid Credentials")
+//                       .build();
            }
 
         if(!(user.getIsVerified())){
-            return AuthenticationResponse.builder()
-                    .token("User Not Verified")
-                    .build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(AuthenticationResponse.builder().message("User Not Verified").build());
+//                    AuthenticationResponse.builder()
+//                    .token("User Not Verified")
+//                    .build();
         }
 
             var jwtToken = jwtService.generateToken(user);
-            return AuthenticationResponse.builder()
-                    .token(jwtToken)
-                    .build();
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(AuthenticationResponse.builder().token(jwtToken).build());
+//                    AuthenticationResponse.builder()
+//                    .token(jwtToken)
+//                    .build();
     }
 
 
-    public AuthenticationResponse forgot(ForgotPasswordRequest request){
+    public ResponseEntity<AuthenticationResponse> forgot(ForgotPasswordRequest request){
 
         if(repository.findByEmail(request.getEmail()).isEmpty()){
-            return AuthenticationResponse.builder()
-                    .token("Invalid Email")
-                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthenticationResponse.builder().message("Invalid Email").build());
+//                    AuthenticationResponse.builder()
+//                    .token("Invalid Email")
+//                    .build();
         }
         User user=new User();
         user=repository.findByEmail(request.getEmail()).orElseThrow();
         if(!user.getIsVerified()){
-            return AuthenticationResponse.builder()
-                    .token("User Not Verified")
-                    .build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(AuthenticationResponse.builder().message("User not Verified").build());
+//                    AuthenticationResponse.builder()
+//                    .token("User Not Verified")
+//                    .build();
         }
 
         LocalDateTime expirationTime=LocalDateTime.now().plusMinutes(OTP_EXPIRATION_MINUTE);
@@ -194,57 +189,63 @@ public class AuthenticationService {
 
         emailService.sendOtpEmail(request.getEmail(),OTP);
 
-        return AuthenticationResponse.builder()
-                .token("Check your email for OTP")
-                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(AuthenticationResponse.builder().message("Check your email for OTP").build());
+//                AuthenticationResponse.builder()
+//                .token("Check your email for OTP")
+//                .build();
 
     }
 
 
-    public AuthenticationResponse resetVerifyOtp(verifyResetPasswordRequest request){
+    public ResponseEntity<AuthenticationResponse> resetVerifyOtp(verifyResetPasswordRequest request){
         String OTP = otpService.getOtpByEmail(request.getEmail());
         var otpUser = otpRepository.findByEmail(request.getEmail()).orElseThrow();
 
         if(LocalDateTime.now().isAfter(otpUser.getExpirationTime())){
-            return AuthenticationResponse.builder()
-                    .token("OTP Expired")
-                    .build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(AuthenticationResponse.builder().message("OTP expired").build());
+//                    AuthenticationResponse.builder()
+//                    .token("OTP Expired")
+//                    .build();
         }
         if(request.getOtp().equals(OTP))
         {
-            return AuthenticationResponse.builder()
-                    .token("Otp Verified Successfully")
-                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(AuthenticationResponse.builder().message("OTP Verified Successfully").build());
+//                    AuthenticationResponse.builder()
+//                    .token("Otp Verified Successfully")
+//                    .build();
         }
         else {
-            return AuthenticationResponse.builder()
-                    .token("incorrect Otp")
-                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthenticationResponse.builder().message("Incorrect OTP").build());
+//                    AuthenticationResponse.builder()
+//                    .token("incorrect Otp")
+//                    .build();
         }
     }
 
 
-    public AuthenticationResponse resetPassword(PasswordResetRequest request){
+    public ResponseEntity<AuthenticationResponse> resetPassword(PasswordResetRequest request){
         var user = repository.findByEmail(request.getEmail()).orElseThrow();
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         repository.save(user);
 
-        return AuthenticationResponse.builder()
-                .token("Password has been reset Successfully")
-                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(AuthenticationResponse.builder().message("Password Has Been reset Successfully").build());
+//                AuthenticationResponse.builder()
+//                .token("Password has been reset Successfully")
+//                .build();
 
 
     }
-    public AuthenticationResponse resend(ResendRequest request){
+    public ResponseEntity<AuthenticationResponse> resend(ResendRequest request){
 
 
         LocalDateTime expirationTime=LocalDateTime.now().plusMinutes(OTP_EXPIRATION_MINUTE);
         var otpUser = otpRepository.findByEmail(request.getEmail()).orElseThrow();
 
         if(LocalDateTime.now().isBefore(otpUser.getExpirationTime().minusMinutes(9))){
-            return AuthenticationResponse.builder()
-                    .token("Please wait for 1 minute before sending another OTP")
-                    .build();
+            return ResponseEntity.status(HttpStatus.TOO_EARLY).body(AuthenticationResponse.builder().message("Please wait for 1 minute before sending another OTP").build());
+//                    AuthenticationResponse.builder()
+//                    .token("Please wait for 1 minute before sending another OTP")
+//                    .build();
         }
 
 
@@ -258,9 +259,10 @@ public class AuthenticationService {
 
         emailService.sendOtpEmail(request.getEmail(),OTP);
 
-        return AuthenticationResponse.builder()
-                .token("OTP sent again")
-                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(AuthenticationResponse.builder().message("OTP sent again").build());
+//                AuthenticationResponse.builder()
+//                .token("OTP sent again")
+//                .build();
     }
 
 

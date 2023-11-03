@@ -1,4 +1,4 @@
-package com.example.jwtauthorisedlogin.authorization;
+package com.example.jwtauthorisedlogin.payload;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResendRequest {
-    private String email;
+public class AuthenticationResponse {
+    private String token;
+    private String message;
 }
+
+
