@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final AuthenticationService service;
-    private final JavaMailSender javaMailSender;
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
