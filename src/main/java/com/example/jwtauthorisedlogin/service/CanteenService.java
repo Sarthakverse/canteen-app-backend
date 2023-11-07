@@ -4,6 +4,7 @@ import com.example.jwtauthorisedlogin.Entity.Canteen;
 import com.example.jwtauthorisedlogin.Entity.Food;
 import com.example.jwtauthorisedlogin.payload.request.CanteenRequest;
 import com.example.jwtauthorisedlogin.payload.request.FoodDetailsRequest;
+import com.example.jwtauthorisedlogin.payload.response.CanteenDetailsResponse;
 import com.example.jwtauthorisedlogin.payload.response.CanteenFoodResponse;
 import com.example.jwtauthorisedlogin.payload.response.MessageResponse;
 import com.example.jwtauthorisedlogin.repository.CanteenFoodRepository;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -46,6 +48,10 @@ public class CanteenService {
         }
 
         return CanteenFoodResponse.builder().foodItems(foodItems).build();
+    }
+    public CanteenDetailsResponse canteenDetails(){
+        List<Canteen> canteenList = canteenRepository.findAll();
+        return new CanteenDetailsResponse(canteenList);
     }
 
 }
