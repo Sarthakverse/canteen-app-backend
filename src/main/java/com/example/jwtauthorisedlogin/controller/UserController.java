@@ -1,8 +1,9 @@
 package com.example.jwtauthorisedlogin.controller;
 
 import com.example.jwtauthorisedlogin.payload.request.FoodCategoryRequest;
+import com.example.jwtauthorisedlogin.payload.request.FoodDetailsRequest;
+import com.example.jwtauthorisedlogin.payload.response.CanteenFoodResponse;
 import com.example.jwtauthorisedlogin.payload.response.FoodCategoryResponse;
-import com.example.jwtauthorisedlogin.payload.response.MessageResponse;
 import com.example.jwtauthorisedlogin.service.CanteenService;
 import com.example.jwtauthorisedlogin.service.FoodService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,30 @@ public class UserController {
             ){
         try {
             return ResponseEntity.ok(foodService.getFoodItem(request));
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/get-food-details")
+    public ResponseEntity<FoodCategoryResponse> getFoodDetails(
+            @RequestBody FoodDetailsRequest request
+            ){
+        try {
+            return ResponseEntity.ok(foodService.getFoodDetails(request));
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/get-canteen-food")
+    public ResponseEntity<CanteenFoodResponse> getCanteenFood(
+            @RequestBody FoodDetailsRequest request
+    ){
+        try {
+            return ResponseEntity.ok(canteenService.canteenFood(request));
         }
         catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

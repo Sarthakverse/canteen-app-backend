@@ -17,8 +17,9 @@ public class Canteen {
     private String name;
     private String email;
     private String description;
+    //private Long foodId;
     private String canteenImage;
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "canteen_food",
             joinColumns = @JoinColumn(name = "canteen_id"),

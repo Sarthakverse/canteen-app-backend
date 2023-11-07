@@ -14,4 +14,5 @@ public class CanteenRequest {
     private String email;
     private String description;
     private String canteenImage;
+    //private Long foodId;
 }
