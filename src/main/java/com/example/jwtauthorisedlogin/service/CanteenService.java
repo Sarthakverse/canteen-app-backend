@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -52,6 +53,10 @@ public class CanteenService {
     public CanteenDetailsResponse canteenDetails(){
         List<Canteen> canteenList = canteenRepository.findAll();
         return new CanteenDetailsResponse(canteenList);
+    }
+
+    public Optional<Canteen> getCanteenById(Long id){
+        return canteenRepository.findById(id);
     }
 
 }

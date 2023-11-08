@@ -8,11 +8,11 @@ import com.example.jwtauthorisedlogin.payload.response.FoodCategoryResponse;
 import com.example.jwtauthorisedlogin.payload.response.MessageResponse;
 import com.example.jwtauthorisedlogin.repository.CanteenRepository;
 import com.example.jwtauthorisedlogin.repository.FoodRepository;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +22,7 @@ public class FoodService {
     private final CanteenRepository canteenRepository;
 
     public MessageResponse createFoodItem(FoodItemRequest request){
+        // create constructors for this
         var food = new Food();
         food.setName(request.getName());
         food.setCategory(request.getCategory());
@@ -48,10 +49,13 @@ public class FoodService {
     }
 
     public FoodCategoryResponse getFoodDetails(FoodDetailsRequest request){
-        List<Food> foodList=foodRepository.findByName(request.getName());
+        List<Food> foodList=foodRepository.findByNameContaining(request.getName());
         return FoodCategoryResponse.builder()
                 .foodItems(foodList)
                 .build();
+    }
+    public Optional<Food> getFoodById(Long id){
+        return foodRepository.findById(id);
     }
 
 }

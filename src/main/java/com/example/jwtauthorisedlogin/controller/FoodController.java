@@ -1,5 +1,7 @@
 package com.example.jwtauthorisedlogin.controller;
 
+import com.example.jwtauthorisedlogin.Entity.Canteen;
+import com.example.jwtauthorisedlogin.Entity.Food;
 import com.example.jwtauthorisedlogin.payload.request.FoodCategoryRequest;
 import com.example.jwtauthorisedlogin.payload.request.FoodDetailsRequest;
 import com.example.jwtauthorisedlogin.payload.response.CanteenDetailsResponse;
@@ -12,10 +14,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
-public class UserController {
+public class FoodController {
     private final FoodService foodService;
     private final CanteenService canteenService;
 
@@ -63,4 +67,18 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @GetMapping("/food/{foodId}")
+    public ResponseEntity<Food> getFoodById(@PathVariable Long foodId) {
+        Optional<Food> food = foodService.getFoodById(foodId);
+        return food.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @GetMapping("/canteen/{canteenId}")
+    public ResponseEntity<Canteen> getCanteenById(@PathVariable Long canteenId) {
+        Optional<Canteen> canteen = canteenService.getCanteenById(canteenId);
+        return canteen.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
 }
