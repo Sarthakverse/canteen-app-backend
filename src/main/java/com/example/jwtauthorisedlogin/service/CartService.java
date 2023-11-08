@@ -3,6 +3,7 @@ package com.example.jwtauthorisedlogin.service;
 import com.example.jwtauthorisedlogin.Entity.Cart;
 import com.example.jwtauthorisedlogin.Entity.Food;
 import com.example.jwtauthorisedlogin.payload.request.CartRequest;
+import com.example.jwtauthorisedlogin.repository.CanteenFoodRepository;
 import com.example.jwtauthorisedlogin.repository.CanteenRepository;
 import com.example.jwtauthorisedlogin.repository.CartRepository;
 import com.example.jwtauthorisedlogin.repository.FoodRepository;
@@ -17,20 +18,14 @@ import java.util.List;
 public class CartService {
     private final CartRepository cartRepository;
     private final FoodRepository foodRepository;
-    private final CanteenRepository canteenRepository;
+    private final CanteenFoodRepository canteenFoodRepository;
     @Transactional
     public Cart addToCart(CartRequest cartRequest) {
         var selectedFood = foodRepository.findById(cartRequest.getFoodId()).orElse(null);
-        var selectedCanteen = canteenRepository.findById(cartRequest.getCanteenId()).orElse(null);
+        var selectedCanteen = canteenFoodRepository.findFoodIdsByCanteenId(cartRequest.getCanteenId());
 
+        if (selectedFood != null && selectedCanteen.contains(cartRequest.getFoodId())){
 
-        if(selectedFood != null && selectedCanteen != null) {
-            Food foodInCanteen = selectedCanteen.getFoods().stream()
-                    .filter(food -> food.getId().equals(selectedFood.getId()))
-                    .findFirst()
-                    .orElse(null);
-
-            if (foodInCanteen != null) {
                 Double price = selectedFood.getPrice() * cartRequest.getQuantity();
 
                 Cart cartEntry = new Cart();
@@ -40,9 +35,10 @@ public class CartService {
 
                 return cartRepository.save(cartEntry);
             }
-        }
         return null;
     }
+
+
     public List<Cart> getCartItems() {
         return cartRepository.findAll();
     }
