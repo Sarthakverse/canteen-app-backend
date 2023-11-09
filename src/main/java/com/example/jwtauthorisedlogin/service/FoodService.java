@@ -46,15 +46,18 @@ public class FoodService {
             existingFood.setPrice(request.getPrice());
             existingFood.setFoodImage(request.getFoodImage());
             foodRepository.save(existingFood);
+
+            return MessageResponse.builder().message(request.getName()+" was updated").build();
         }
         else {
             var canteen = canteenRepository.findById(request.getCanteenId()).orElseThrow();
             canteen.getFoods().add(food);
             foodRepository.save(food);
             canteenRepository.save(canteen);
+            return MessageResponse.builder().message(request.getName()+" was added").build();
         }
 
-        return MessageResponse.builder().message(request.getName()+" was added").build();
+
 
     }
 

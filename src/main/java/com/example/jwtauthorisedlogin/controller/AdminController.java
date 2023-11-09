@@ -5,6 +5,7 @@ import com.example.jwtauthorisedlogin.payload.request.FoodItemRequest;
 import com.example.jwtauthorisedlogin.payload.response.MessageResponse;
 import com.example.jwtauthorisedlogin.service.CanteenService;
 import com.example.jwtauthorisedlogin.service.FoodService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +22,7 @@ public class AdminController {
     private final CanteenService canteenService;
 
     @PostMapping("/create-food-item")
-    public ResponseEntity<MessageResponse> createFoodItem(
-            @RequestBody FoodItemRequest request
-            ){
+    public ResponseEntity<MessageResponse> createFoodItem( @RequestBody FoodItemRequest request){
 
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(foodService.createFoodItem(request));
@@ -34,14 +33,16 @@ public class AdminController {
     }
 
     @PostMapping("/create-canteen")
-    public ResponseEntity<MessageResponse> createCanteen(
-            @RequestBody CanteenRequest request
-    ){
+    public ResponseEntity<MessageResponse> createCanteen(@RequestBody CanteenRequest request){
 
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(canteenService.createCanteen(request));
-        }
-        catch (Exception e){
+            MessageResponse response = canteenService.createCanteen(request);
+            if (response.getMessage().contains("already exists")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+            } else {
+                return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            }
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(MessageResponse.builder().message("Canteen not added").build());
         }
     }
