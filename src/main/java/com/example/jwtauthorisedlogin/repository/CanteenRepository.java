@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface CanteenRepository extends JpaRepository<Canteen,Long> {
     Optional<Canteen> findById(Long id);
     Canteen findByName(String name);
+    Canteen findByEmail(String email);
 
 
 }

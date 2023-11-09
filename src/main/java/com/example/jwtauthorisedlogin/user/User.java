@@ -1,12 +1,15 @@
 package com.example.jwtauthorisedlogin.user;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,6 +25,11 @@ public class User implements UserDetails {
     private String email;
     private String password;
     private Boolean isVerified;
+    private String contactNumber;
+    private LocalDate dateOfBirth;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
 
     public void setIsVerified(boolean verified) {
         isVerified = verified;
@@ -30,7 +38,6 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    //Defining all the methods that will be required by SpringSecurity
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

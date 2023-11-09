@@ -18,11 +18,9 @@ import java.util.List;
 public class CartService {
     private final CartRepository cartRepository;
     private final FoodRepository foodRepository;
-    private final CanteenFoodRepository canteenFoodRepository;
     @Transactional
     public Cart addToCart(CartRequest cartRequest) {
         var selectedFood = foodRepository.findById(cartRequest.getFoodId()).orElse(null);
-//      var selectedCanteen = canteenFoodRepository.findFoodIdsByCanteenId(cartRequest.getCanteenId());
 
         if (selectedFood != null){
 

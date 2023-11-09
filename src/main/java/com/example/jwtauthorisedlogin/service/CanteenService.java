@@ -28,6 +28,9 @@ public class CanteenService {
     private final CanteenFoodRepository canteenFoodRepository;
 
     public MessageResponse createCanteen(CanteenRequest request){
+        if (canteenRepository.findByEmail(request.getEmail())!=null) {
+            return MessageResponse.builder().message("Canteen with email " + request.getEmail() + " already exists").build();
+        }
         var canteen=new Canteen();
         canteen.setName(request.getName());
         canteen.setEmail(request.getEmail());
