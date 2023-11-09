@@ -12,11 +12,13 @@ import com.example.jwtauthorisedlogin.repository.CanteenRepository;
 import com.example.jwtauthorisedlogin.repository.FoodRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +33,7 @@ public class CanteenService {
         canteen.setEmail(request.getEmail());
         canteen.setDescription(request.getDescription());
         canteen.setCanteenImage(request.getCanteenImage());
+
         canteenRepository.save(canteen);
 
         return MessageResponse.builder().message(request.getName()+" was added").build();

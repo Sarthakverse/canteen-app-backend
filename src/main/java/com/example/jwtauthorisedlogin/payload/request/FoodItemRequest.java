@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -15,6 +16,6 @@ public class FoodItemRequest {
     private Category category;
     private String description;
     private Double price;
-    private String foodImage;
+    private String foodImage;;
     private Long canteenId;
 }
