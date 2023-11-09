@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CartRequest {
     private Long foodId;
-    private Long canteenId;
+//    private Long canteenId;
     private Integer quantity;
 }

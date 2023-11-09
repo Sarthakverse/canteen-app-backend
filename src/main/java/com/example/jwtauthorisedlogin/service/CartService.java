@@ -22,9 +22,9 @@ public class CartService {
     @Transactional
     public Cart addToCart(CartRequest cartRequest) {
         var selectedFood = foodRepository.findById(cartRequest.getFoodId()).orElse(null);
-        var selectedCanteen = canteenFoodRepository.findFoodIdsByCanteenId(cartRequest.getCanteenId());
+//      var selectedCanteen = canteenFoodRepository.findFoodIdsByCanteenId(cartRequest.getCanteenId());
 
-        if (selectedFood != null && selectedCanteen.contains(cartRequest.getFoodId())){
+        if (selectedFood != null){
 
                 Double price = selectedFood.getPrice() * cartRequest.getQuantity();
 
