@@ -41,4 +41,10 @@ public class CartController {
         Double totalCartPrice = cartService.getTotalCartPrice();
         return ResponseEntity.ok(totalCartPrice);
     }
+
+    @DeleteMapping("/delete-cart-item/{id}")
+    public ResponseEntity<MessageResponse> deleteCartItem(@PathVariable Long id) {
+        MessageResponse messageResponse = cartService.deleteCartItem(id);
+        return ResponseEntity.ok(messageResponse);
+    }
 }

@@ -45,10 +45,7 @@ public class CanteenService {
         Set<Food> foodItems = new HashSet<>();
 
         for (Long foodId : foodItemsId) {
-            Food food = foodRepository.findById(foodId).orElse(null);
-            if (food != null) {
-                foodItems.add(food);
-            }
+            foodRepository.findById(foodId).ifPresent(foodItems::add);
         }
 
         return CanteenFoodResponse.builder().foodItems(foodItems).build();
