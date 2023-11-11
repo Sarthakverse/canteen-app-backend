@@ -1,14 +1,14 @@
 package com.example.jwtauthorisedlogin.controller;
 
+
 import com.example.jwtauthorisedlogin.payload.request.GetProfileRequest;
 import com.example.jwtauthorisedlogin.payload.request.ProfileUpdateRequest;
 import com.example.jwtauthorisedlogin.payload.response.MessageResponse;
 import com.example.jwtauthorisedlogin.payload.response.UserProfileResponse;
 import com.example.jwtauthorisedlogin.service.ProfileService;
-import com.example.jwtauthorisedlogin.user.User;
+
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class ProfileController {
     private final ProfileService profileService;
-
     @PutMapping("/update-profile")
     public ResponseEntity<MessageResponse> updateProfile(@Valid  @RequestBody ProfileUpdateRequest profileUpdateRequest){
         try {
@@ -35,7 +34,8 @@ public class ProfileController {
     }
 
     @GetMapping("/get-profile")
-    public ResponseEntity<UserProfileResponse> getProfile(@RequestBody GetProfileRequest request) {
+    public ResponseEntity<UserProfileResponse> getProfile(@RequestBody GetProfileRequest request)
+    {
         try {
             UserProfileResponse userProfile = profileService.getProfile(request.getEmail());
             if (userProfile != null) {
@@ -47,5 +47,9 @@ public class ProfileController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+
+
 }
+
 
