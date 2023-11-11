@@ -3,6 +3,7 @@ package com.example.jwtauthorisedlogin.service;
 import com.example.jwtauthorisedlogin.Entity.Cart;
 import com.example.jwtauthorisedlogin.Entity.Food;
 import com.example.jwtauthorisedlogin.payload.request.CartRequest;
+import com.example.jwtauthorisedlogin.payload.response.MessageResponse;
 import com.example.jwtauthorisedlogin.repository.CanteenFoodRepository;
 import com.example.jwtauthorisedlogin.repository.CanteenRepository;
 import com.example.jwtauthorisedlogin.repository.CartRepository;
@@ -12,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -23,6 +25,12 @@ public class CartService {
         var selectedFood = foodRepository.findById(cartRequest.getFoodId()).orElse(null);
 
         if (selectedFood != null){
+            Cart existingCartItem = cartRepository.findById(selectedFood.getId()).orElse(null);
+            if (existingCartItem != null) {
+                existingCartItem.setQuantity(cartRequest.getQuantity());
+                existingCartItem.setPrice(selectedFood.getPrice() * cartRequest.getQuantity());
+                return cartRepository.save(existingCartItem);
+            }
 
                 Double price = selectedFood.getPrice() * cartRequest.getQuantity();
 
@@ -34,6 +42,19 @@ public class CartService {
                 return cartRepository.save(cartEntry);
             }
         return null;
+    }
+
+
+    @Transactional
+    public MessageResponse deleteCartItem(Long id) {
+        Optional<Cart> existingCartItem = cartRepository.findById(id);
+
+        if (existingCartItem.isPresent()) {
+            cartRepository.deleteById(id);
+            return MessageResponse.builder().message("Item deleted from the cart").build();
+        } else {
+            return MessageResponse.builder().message("Item not found in the cart").build();
+        }
     }
 
 
