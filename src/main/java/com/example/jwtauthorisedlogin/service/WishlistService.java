@@ -48,4 +48,20 @@ public class WishlistService {
                 .map(UserWishlist::getFood)
                 .collect(Collectors.toList());
     }
+
+    public MessageResponse deleteWishlistItem(WishlistRequest request) {
+        var user = userRepository.findByEmail(request.getUserEmail()).orElse(null);
+        var food = foodRepository.findById(request.getFoodId()).orElse(null);
+
+        if (!wishlistRepository.existsByUserAndFood(user, food)) {
+            return MessageResponse.builder().message("Food item is not in the wishlist").build();
+        }
+
+        var wishlistItem = wishlistRepository.findByUserAndFood(user, food).orElse(null);
+
+        wishlistRepository.delete(wishlistItem);
+
+        return MessageResponse.builder().message("Food item deleted from the wishlist").build();
+    }
+
 }

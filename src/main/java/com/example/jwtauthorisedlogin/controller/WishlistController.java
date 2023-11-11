@@ -30,4 +30,10 @@ public class WishlistController {
         List<Food> wishlistItems = wishlistService.getWishlistItems(request);
         return ResponseEntity.ok(wishlistItems);
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<MessageResponse> deleteWishlistItem(@RequestBody WishlistRequest request){
+        MessageResponse response = wishlistService.deleteWishlistItem(request);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }
