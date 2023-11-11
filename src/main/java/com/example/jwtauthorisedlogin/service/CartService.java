@@ -10,6 +10,8 @@ import com.example.jwtauthorisedlogin.repository.CartRepository;
 import com.example.jwtauthorisedlogin.repository.FoodRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,17 +48,17 @@ public class CartService {
 
 
     @Transactional
-    public MessageResponse deleteCartItem(Long id) {
+    public ResponseEntity<MessageResponse> deleteCartItem(Long id) {
         Optional<Cart> existingCartItem = cartRepository.findById(id);
 
         if (existingCartItem.isPresent()) {
             cartRepository.deleteById(id);
-            return MessageResponse.builder().message("Item deleted from the cart").build();
+            return ResponseEntity.ok(MessageResponse.builder().message("Item deleted from the cart").build());
         } else {
-            return MessageResponse.builder().message("Item not found in the cart").build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(MessageResponse.builder().message("Item not found in the cart").build());
         }
     }
-
 
     public List<Cart> getCartItems() {
         return cartRepository.findAll();
