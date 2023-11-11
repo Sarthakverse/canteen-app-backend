@@ -1,5 +1,7 @@
 package com.example.jwtauthorisedlogin.user;
 
+import com.example.jwtauthorisedlogin.Entity.Food;
+import com.example.jwtauthorisedlogin.Entity.UserWishlist;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -11,7 +13,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -29,6 +33,9 @@ public class User implements UserDetails {
     private LocalDate dateOfBirth;
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<UserWishlist> wishlist = new HashSet<>();
 
 
     public void setIsVerified(boolean verified) {
@@ -72,4 +79,6 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }

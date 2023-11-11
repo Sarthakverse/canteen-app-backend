@@ -1,8 +1,10 @@
 package com.example.jwtauthorisedlogin.service;
 
+import com.example.jwtauthorisedlogin.Entity.Food;
 import com.example.jwtauthorisedlogin.payload.request.ProfileUpdateRequest;
 import com.example.jwtauthorisedlogin.payload.response.MessageResponse;
 import com.example.jwtauthorisedlogin.payload.response.UserProfileResponse;
+import com.example.jwtauthorisedlogin.repository.FoodRepository;
 import com.example.jwtauthorisedlogin.repository.UserRepository;
 import com.example.jwtauthorisedlogin.user.User;
 import lombok.AllArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class ProfileService
 {
     private final UserRepository userRepository;
+    private final FoodRepository foodRepository;
 
     public MessageResponse updateProfile(ProfileUpdateRequest profileUpdateRequest)
     {
@@ -34,7 +37,6 @@ public class ProfileService
             return MessageResponse.builder().message("could not fetch data").build();
         }
     }
-
 
     public UserProfileResponse getProfile(String email) {
         User user = userRepository.findByEmail(email).orElse(null);
