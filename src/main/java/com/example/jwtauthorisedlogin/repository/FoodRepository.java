@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface FoodRepository extends JpaRepository<Food,Long> {
     List<Food> findByCategory(Category category);
     Optional<Food> findById(Long id);
-    List<Food> findByNameContaining(String name);
+    List<Food> findByNameContainingIgnoreCase(String name);
 
     Food findByNameAndCanteenId(String name, Long canteenId);
 }

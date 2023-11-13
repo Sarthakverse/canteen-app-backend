@@ -69,7 +69,7 @@ public class FoodService {
     }
 
     public FoodCategoryResponse getFoodDetails(FoodDetailsRequest request){
-        List<Food> foodList=foodRepository.findByNameContaining(request.getName());
+        List<Food> foodList=foodRepository.findByNameContainingIgnoreCase(request.getName());
         return FoodCategoryResponse.builder()
                 .foodItems(foodList)
                 .build();
