@@ -1,5 +1,6 @@
 package com.example.jwtauthorisedlogin.user;
 
+import com.example.jwtauthorisedlogin.Entity.Cart;
 import com.example.jwtauthorisedlogin.Entity.Food;
 import com.example.jwtauthorisedlogin.Entity.UserWishlist;
 import jakarta.persistence.*;
@@ -34,8 +35,11 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Set<UserWishlist> wishlist = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    private Set<Cart> carts = new HashSet<>();
 
 
     public void setIsVerified(boolean verified) {

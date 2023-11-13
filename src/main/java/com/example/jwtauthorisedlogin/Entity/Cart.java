@@ -1,5 +1,6 @@
 package com.example.jwtauthorisedlogin.Entity;
 
+import com.example.jwtauthorisedlogin.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,6 +17,15 @@ public class Cart {
     private String foodItemName;
     private Integer quantity;
     private Double price;
+    @ManyToOne
+    @JoinColumn(name = "user_email", referencedColumnName = "email")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "food_item_id",referencedColumnName = "id")
+    private Food foodId;
+
+
 
 }
 
