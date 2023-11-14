@@ -11,6 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class FeedbackService {
@@ -28,6 +30,7 @@ public class FeedbackService {
                 var feedback = new Feedback();
                 feedback.setFeedback(feedbackRequest.getFeedback());
                 feedback.setUser(user);
+                feedback.setRating(feedbackRequest.getRating());
                 feedbackRepository.save(feedback);
                 return MessageResponse.builder().message("Feedback has been added").build();
 
@@ -37,8 +40,7 @@ public class FeedbackService {
         }
     }
 
-    public MessageResponse deleteFeedback()
-    {
+    public MessageResponse deleteFeedback() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) authentication.getPrincipal();
 
@@ -58,7 +60,7 @@ public class FeedbackService {
         }
     }
 
+
+
 }
-
-
 
