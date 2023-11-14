@@ -14,9 +14,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserProfileResponse {
+    private String profileImage;
     private String fullName;
-    private String email;
     private String contactNumber;
-    private LocalDate dateOfBirth;
-    private String gender;
+    private String email;
 }
