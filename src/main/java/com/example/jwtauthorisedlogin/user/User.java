@@ -30,10 +30,9 @@ public class User implements UserDetails {
     private String email;
     private String password;
     private Boolean isVerified;
-    private String contactNumber;
-    private LocalDate dateOfBirth;
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
+    private String phoneNo;
+    private String profileImage;
+
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Set<UserWishlist> wishlist = new HashSet<>();

@@ -1,5 +1,6 @@
 package com.example.jwtauthorisedlogin.payload.request;
 
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetProfileRequest {
-    private String email;
+public class FeedbackRequest {
+    @Size(max = 1000)
+    private String feedback;
 }

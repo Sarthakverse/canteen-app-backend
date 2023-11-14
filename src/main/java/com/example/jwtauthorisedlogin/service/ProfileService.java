@@ -1,14 +1,17 @@
 package com.example.jwtauthorisedlogin.service;
 
-import com.example.jwtauthorisedlogin.Entity.Food;
 import com.example.jwtauthorisedlogin.payload.request.ProfileUpdateRequest;
 import com.example.jwtauthorisedlogin.payload.response.MessageResponse;
 import com.example.jwtauthorisedlogin.payload.response.UserProfileResponse;
 import com.example.jwtauthorisedlogin.repository.FoodRepository;
 import com.example.jwtauthorisedlogin.repository.UserRepository;
 import com.example.jwtauthorisedlogin.user.User;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
 
 @Service
 @AllArgsConstructor
@@ -17,40 +20,48 @@ public class ProfileService
     private final UserRepository userRepository;
     private final FoodRepository foodRepository;
 
-    public MessageResponse updateProfile(ProfileUpdateRequest profileUpdateRequest)
+    public UserProfileResponse getProfile()
     {
-        User existingUser = userRepository.findByEmail(profileUpdateRequest.getEmail()).orElse(null);
-        if(existingUser!=null){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
 
-            existingUser.setFullName(profileUpdateRequest.getYourName());
-            existingUser.setEmail(profileUpdateRequest.getEmail());
-            existingUser.setContactNumber(profileUpdateRequest.getContactNumber());
-            existingUser.setDateOfBirth(profileUpdateRequest.getDateOfBirth());
-            existingUser.setGender(profileUpdateRequest.getGender());
+           var user = userRepository.findByEmail(currentUser.getEmail()).orElse(null);
+           if(user != null)
+           {
+               return UserProfileResponse.builder()
+                       .fullName(user.getFullName())
+                       .contactNumber(user.getPhoneNo())
+                       .email(user.getEmail())
+                       .profileImage(user.getProfileImage())
+                       .build();
+           }
+           else{
+               return null;
+           }
 
+    }
 
-        userRepository.save(existingUser);
+    public MessageResponse updateProfile(@Valid ProfileUpdateRequest profileUpdateRequest)
+    {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
 
-        return MessageResponse.builder().message("Profile has been updated").build();
+        var user = userRepository.findByEmail(currentUser.getEmail()).orElse(null);
+        if(user != null)
+        {
+            user.setFullName(profileUpdateRequest.getFullName());
+            user.setPhoneNo(profileUpdateRequest.getContactNumber());
+            user.setProfileImage(profileUpdateRequest.getProfileImage());
+            userRepository.save(user);
+            return MessageResponse.builder().message("Profile has been updated").build();
         }
         else{
-            return MessageResponse.builder().message("could not fetch data").build();
+            return MessageResponse.builder().message("Profile has not been updated").build();
         }
+
     }
 
-    public UserProfileResponse getProfile(String email) {
-        User user = userRepository.findByEmail(email).orElse(null);
-        if (user != null) {
-            return UserProfileResponse.builder()
-                    .fullName(user.getFullName())
-                    .email(user.getEmail())
-                    .contactNumber(user.getContactNumber())
-                    .dateOfBirth(user.getDateOfBirth())
-                    .gender(user.getGender().toString())
-                    .build();
-        } else {
-            return null;
-        }
-    }
+
+
 
 }
