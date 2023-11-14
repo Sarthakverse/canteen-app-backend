@@ -1,5 +1,6 @@
 package com.example.jwtauthorisedlogin.payload.request;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,4 +14,6 @@ import lombok.NoArgsConstructor;
 public class FeedbackRequest {
     @Size(max = 1000)
     private String feedback;
+    @Max(value = 5)
+    private Integer rating;
 }

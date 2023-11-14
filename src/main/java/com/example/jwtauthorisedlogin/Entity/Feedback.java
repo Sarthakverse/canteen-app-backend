@@ -17,4 +17,6 @@ public class Feedback {
 
     private String feedback;
 
+    private Integer rating;
+
 }
