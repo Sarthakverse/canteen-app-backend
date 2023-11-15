@@ -10,7 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface FeedbackRepository extends JpaRepository<Feedback, Long>{
-
     Optional<Feedback> findByUser(User user);
 
 }

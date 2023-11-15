@@ -10,9 +10,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-
 @Service
 @AllArgsConstructor
 public class FeedbackService {
@@ -60,7 +57,18 @@ public class FeedbackService {
         }
     }
 
-
-
+//    public List<Feedback> getFeedback() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        User currentUser = (User) authentication.getPrincipal();
+//
+//        var user = userRepository.findByEmail(currentUser.getEmail()).orElse(null);
+//        if(user != null)
+//        {
+//            return feedbackRepository.findAll();
+//        }
+//        else{
+//            return null;
+//        }
+//    }
 }
 

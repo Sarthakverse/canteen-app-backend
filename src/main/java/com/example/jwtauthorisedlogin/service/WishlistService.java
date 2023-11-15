@@ -34,6 +34,10 @@ public class WishlistService {
 
             var food = foodRepository.findById(request.getFoodId()).orElse(null);
 
+            if(food == null){
+                return MessageResponse.builder().message("Food item not found").build();
+            }
+
             if (wishlistRepository.existsByUserAndFood(currentUser, food)) {
                 return MessageResponse.builder().message("Food item is already in the wishlist").build();
             }
@@ -84,5 +88,7 @@ public class WishlistService {
         }
 
     }
+
+
 
 }

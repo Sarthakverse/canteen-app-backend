@@ -23,7 +23,18 @@ public class WishlistController {
     @PostMapping("/add")
     public ResponseEntity<MessageResponse> addToWishlist(@RequestBody WishlistRequest request){
         MessageResponse response = wishlistService.addToWishlist(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        if(response.getMessage().contains("Food item added to the wishlist"))
+        {
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
+        else if(response.getMessage().contains("Food item is already in the wishlist"))
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+        else
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
     }
 
     @GetMapping("/get")
