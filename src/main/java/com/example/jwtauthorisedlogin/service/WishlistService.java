@@ -71,8 +71,8 @@ public class WishlistService {
         var user = userRepository.findByEmail(request.getEmail()).orElse(null);
         var food = foodRepository.findById(request.getFoodId()).orElse(null);
 
-        if(Objects.equals(currentUser.getEmail(), request.getEmail())){
-            if (!wishlistRepository.existsByUserAndFood(user,food)) {
+        if (Objects.equals(currentUser.getEmail(), request.getEmail())) {
+            if (!wishlistRepository.existsByUserAndFood(user, food)) {
                 return MessageResponse.builder().message("Food item is not in the wishlist").build();
             }
 
@@ -82,12 +82,11 @@ public class WishlistService {
             wishlistRepository.delete(wishlistItem);
 
             return MessageResponse.builder().message("Food item deleted from the wishlist").build();
-        }
-        else{
+        } else {
             return MessageResponse.builder().message("Food item is not in the wishlist").build();
         }
-
     }
+
 
 
 

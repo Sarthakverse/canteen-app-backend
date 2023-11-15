@@ -1,8 +1,10 @@
 package com.example.jwtauthorisedlogin.controller;
 
 import com.example.jwtauthorisedlogin.Entity.Cart;
+import com.example.jwtauthorisedlogin.payload.request.CartDiscountRequest;
 import com.example.jwtauthorisedlogin.payload.request.CartItemDeleteRequest;
 import com.example.jwtauthorisedlogin.payload.request.CartRequest;
+import com.example.jwtauthorisedlogin.payload.response.DiscountedPriceResponse;
 import com.example.jwtauthorisedlogin.payload.response.GetCartItemResponse;
 import com.example.jwtauthorisedlogin.payload.response.MessageResponse;
 import com.example.jwtauthorisedlogin.service.CartService;
@@ -51,4 +53,10 @@ public class CartController {
         return cartService.deleteCartItem(cartItemDeleteRequest);
 
     }
+
+    @GetMapping("/calculateDiscountedPrice")
+    public DiscountedPriceResponse calculateDiscountedPrice(@RequestBody CartDiscountRequest request) {
+        return cartService.getDiscountedPriceByUser(request);
+    }
+
 }

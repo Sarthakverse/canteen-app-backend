@@ -38,15 +38,12 @@ public class FeedbackController {
         }
     }
 
-//   @GetMapping("/get-feedback")
-//    public ResponseEntity<List<Feedback>> getFeedback() {
-//        List<Feedback> feedback = feedbackService.getFeedback();
-//        if (feedback != null) {
-//            return ResponseEntity.ok(feedback);
-//        } else {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-//        }
-//    }
+  @GetMapping("/get-feedback")
+   public ResponseEntity<List<Feedback>> getFeedback(){
+      List<Feedback> feedback = feedbackService.getFeedback();
+      return ResponseEntity.ok(feedback);
+
+    }
 
 
 }

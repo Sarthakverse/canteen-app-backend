@@ -1,8 +1,10 @@
 package com.example.jwtauthorisedlogin.service;
 
 import com.example.jwtauthorisedlogin.Entity.Cart;
+import com.example.jwtauthorisedlogin.payload.request.CartDiscountRequest;
 import com.example.jwtauthorisedlogin.payload.request.CartItemDeleteRequest;
 import com.example.jwtauthorisedlogin.payload.request.CartRequest;
+import com.example.jwtauthorisedlogin.payload.response.DiscountedPriceResponse;
 import com.example.jwtauthorisedlogin.payload.response.GetCartItemResponse;
 import com.example.jwtauthorisedlogin.payload.response.MessageResponse;
 import com.example.jwtauthorisedlogin.repository.CartRepository;
@@ -97,4 +99,27 @@ public class CartService {
 
         return total;
     }
+
+    @Transactional
+    public DiscountedPriceResponse getDiscountedPriceByUser(CartDiscountRequest cartDiscountRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+
+        List<Cart> cartItems = cartRepository.findByUserEmail(currentUser.getEmail());
+        Double total = 0.0;
+        var discountCode = cartDiscountRequest.getCouponCode();
+
+        for (Cart cartItem : cartItems) {
+            System.out.print(cartItem+" ");
+            total += cartItem.getPrice();
+        }
+
+        if ("DISCOUNT10".equals(discountCode)) {
+            total = total - (total * 0.1);
+            return new DiscountedPriceResponse(total);
+        } else {
+            return new DiscountedPriceResponse("Invalid coupon code: " + discountCode);
+        }
+    }
+
 }
