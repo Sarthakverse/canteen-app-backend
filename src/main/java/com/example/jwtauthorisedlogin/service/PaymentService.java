@@ -8,6 +8,8 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PaymentService {
 
@@ -30,7 +32,7 @@ public class PaymentService {
     public Order createOrder(double amount, String currency, String receipt) {
         try {
             JSONObject orderRequest = new JSONObject();
-            orderRequest.put("amount",amount);
+            orderRequest.put("amount",amount*100);
             orderRequest.put("currency",currency);
             orderRequest.put("receipt", receipt);
 //            JSONObject notes = new JSONObject();
@@ -46,12 +48,21 @@ public class PaymentService {
 
     public Payment capturePayment(String paymentId, double amount) {
         try {
-            JSONObject options = new JSONObject();
-            options.put("amount", amount * 100);
+            JSONObject paymentRequest = new JSONObject();
+            paymentRequest.put("amount", amount * 100);
+            paymentRequest.put("currency", "INR");
 
-            return razorpayClient.payments.capture(paymentId, options);
+            Payment payment = razorpayClient.payments.capture(paymentId, paymentRequest);
+
+            return payment;
         } catch (RazorpayException e) {
             throw new RuntimeException("Error capturing Razorpay payment", e);
         }
+    }
+    public List<Order> getAllOrders() throws RazorpayException {
+        JSONObject query = new JSONObject();
+        query.put("count", 10); // You can adjust the count based on your requirements
+
+        return razorpayClient.orders.fetchAll(query);
     }
 }

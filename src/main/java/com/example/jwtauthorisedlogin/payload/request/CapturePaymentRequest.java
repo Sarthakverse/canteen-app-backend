@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CapturePaymentRequest {
     private String paymentId;
+    private Double amount;
 }
