@@ -9,6 +9,7 @@ import com.example.jwtauthorisedlogin.payload.response.CanteenFoodResponse;
 import com.example.jwtauthorisedlogin.payload.response.FoodCategoryResponse;
 import com.example.jwtauthorisedlogin.service.CanteenService;
 import com.example.jwtauthorisedlogin.service.FoodService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class FoodController {
 
     @PostMapping("/get-food-items")
     public ResponseEntity<FoodCategoryResponse> getFoodItems(
-            @RequestBody FoodCategoryRequest request
+             @RequestBody FoodCategoryRequest request
             ){
         try {
             return ResponseEntity.ok(foodService.getFoodItem(request));

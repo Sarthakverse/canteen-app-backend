@@ -1,10 +1,15 @@
 package com.example.jwtauthorisedlogin.payload.request;
 
 import com.example.jwtauthorisedlogin.Entity.Category;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 
 @Data
@@ -18,4 +23,11 @@ public class FoodItemRequest {
     private Double price;
     private String foodImage;;
     private Long canteenId;
+    @NotEmpty
+    @Size(min = 3, max = 3)
+    private List<String> ingredients;
+
+    @NotEmpty
+    @Size(min = 3, max = 3)
+    private List<String> ingredientImageList;
 }
