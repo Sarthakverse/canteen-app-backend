@@ -25,17 +25,22 @@ public class FeedbackService {
 
         var user = userRepository.findByEmail(currentUser.getEmail()).orElse(null);
 
-        if(user != null)
-        {
+        if (user != null) {
+            Feedback existingFeedback = feedbackRepository.findByUser(user).orElse(null);
+            if (existingFeedback != null) {
+                existingFeedback.setFeedback(feedbackRequest.getFeedback());
+                existingFeedback.setRating(feedbackRequest.getRating());
+                feedbackRepository.save(existingFeedback);
+                return MessageResponse.builder().message("Feedback has been updated").build();
+            } else {
                 var feedback = new Feedback();
                 feedback.setFeedback(feedbackRequest.getFeedback());
                 feedback.setUser(user);
                 feedback.setRating(feedbackRequest.getRating());
                 feedbackRepository.save(feedback);
                 return MessageResponse.builder().message("Feedback has been added").build();
-
-        }
-        else{
+            }
+        } else {
             return MessageResponse.builder().message("Feedback has not been added").build();
         }
     }
