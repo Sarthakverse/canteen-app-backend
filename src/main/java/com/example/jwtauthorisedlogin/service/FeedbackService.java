@@ -10,6 +10,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class FeedbackService {
@@ -22,17 +25,22 @@ public class FeedbackService {
 
         var user = userRepository.findByEmail(currentUser.getEmail()).orElse(null);
 
-        if(user != null)
-        {
+        if (user != null) {
+            Feedback existingFeedback = feedbackRepository.findByUser(user).orElse(null);
+            if (existingFeedback != null) {
+                existingFeedback.setFeedback(feedbackRequest.getFeedback());
+                existingFeedback.setRating(feedbackRequest.getRating());
+                feedbackRepository.save(existingFeedback);
+                return MessageResponse.builder().message("Feedback has been updated").build();
+            } else {
                 var feedback = new Feedback();
                 feedback.setFeedback(feedbackRequest.getFeedback());
                 feedback.setUser(user);
                 feedback.setRating(feedbackRequest.getRating());
                 feedbackRepository.save(feedback);
                 return MessageResponse.builder().message("Feedback has been added").build();
-
-        }
-        else{
+            }
+        } else {
             return MessageResponse.builder().message("Feedback has not been added").build();
         }
     }
@@ -57,18 +65,9 @@ public class FeedbackService {
         }
     }
 
-//    public List<Feedback> getFeedback() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        User currentUser = (User) authentication.getPrincipal();
-//
-//        var user = userRepository.findByEmail(currentUser.getEmail()).orElse(null);
-//        if(user != null)
-//        {
-//            return feedbackRepository.findAll();
-//        }
-//        else{
-//            return null;
-//        }
-//    }
+    public List<Feedback> getFeedback()
+    {
+        return feedbackRepository.findAll();
+    }
 }
 

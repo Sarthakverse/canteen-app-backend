@@ -23,7 +23,9 @@ public class FeedbackController {
         var feedback = feedbackService.addFeedback(request);
         if (feedback.getMessage().contains("Feedback has been added")) {
             return ResponseEntity.ok(feedback);
-        } else {
+        }else if(feedback.getMessage().contains("Feedback has been updated")){
+            return ResponseEntity.ok(feedback);
+        }else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
@@ -38,15 +40,12 @@ public class FeedbackController {
         }
     }
 
-//   @GetMapping("/get-feedback")
-//    public ResponseEntity<List<Feedback>> getFeedback() {
-//        List<Feedback> feedback = feedbackService.getFeedback();
-//        if (feedback != null) {
-//            return ResponseEntity.ok(feedback);
-//        } else {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-//        }
-//    }
+  @GetMapping("/get-feedback")
+   public ResponseEntity<List<Feedback>> getFeedback(){
+      List<Feedback> feedback = feedbackService.getFeedback();
+      return ResponseEntity.ok(feedback);
+
+    }
 
 
 }
