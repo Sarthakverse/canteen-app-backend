@@ -22,7 +22,7 @@ public class AdminController {
     private final CanteenService canteenService;
 
     @PostMapping("/create-food-item")
-    public ResponseEntity<MessageResponse> createFoodItem( @RequestBody FoodItemRequest request){
+    public ResponseEntity<MessageResponse> createFoodItem(@Valid @RequestBody FoodItemRequest request){
 
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(foodService.createFoodItem(request));

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -21,6 +22,10 @@ public class Food{
     private Long canteenId;
     private String foodImage;
     private String description;
+    @ElementCollection
+    private List<String> ingredients;
+    @ElementCollection
+    private List<String> IngredientImageList;
     @JsonIgnore
     @ManyToMany(mappedBy = "foods",fetch = FetchType.LAZY)
     private Set<Canteen> canteens = new HashSet<>();

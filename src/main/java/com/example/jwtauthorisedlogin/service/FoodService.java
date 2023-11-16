@@ -29,7 +29,6 @@ public class FoodService {
     private final CanteenRepository canteenRepository;
 
     public MessageResponse createFoodItem(FoodItemRequest request) throws IOException {
-        // create constructors for this
         var food = new Food();
         food.setName(request.getName());
         food.setCategory(request.getCategory());
@@ -37,6 +36,8 @@ public class FoodService {
         food.setPrice((request.getPrice()));
         food.setCanteenId(request.getCanteenId());
         food.setFoodImage(request.getFoodImage());
+        food.setIngredients(request.getIngredients());
+        food.setIngredientImageList(request.getIngredientImageList());
 
         Food existingFood = foodRepository.findByNameAndCanteenId(request.getName(), request.getCanteenId());
 
@@ -45,6 +46,8 @@ public class FoodService {
             existingFood.setDescription(request.getDescription());
             existingFood.setPrice(request.getPrice());
             existingFood.setFoodImage(request.getFoodImage());
+            existingFood.setIngredients(request.getIngredients());
+            existingFood.setIngredientImageList(request.getIngredientImageList());
             foodRepository.save(existingFood);
 
             return MessageResponse.builder().message(request.getName()+" was updated").build();
