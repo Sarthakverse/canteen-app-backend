@@ -48,13 +48,13 @@ public class CartController {
         return cartService.getTotalCartPriceByUser(authentication);
     }
 
-    @DeleteMapping("/delete-cart-item")
+    @PostMapping("/delete-cart-item")
     public ResponseEntity<MessageResponse> deleteCartItem(@RequestBody CartItemDeleteRequest cartItemDeleteRequest) {
         return cartService.deleteCartItem(cartItemDeleteRequest);
 
     }
 
-    @GetMapping("/calculateDiscountedPrice")
+    @PostMapping("/calculateDiscountedPrice")
     public DiscountedPriceResponse calculateDiscountedPrice(@RequestBody CartDiscountRequest request) {
         return cartService.getDiscountedPriceByUser(request);
     }

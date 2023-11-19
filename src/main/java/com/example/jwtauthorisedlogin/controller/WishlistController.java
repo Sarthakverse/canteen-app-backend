@@ -43,7 +43,7 @@ public class WishlistController {
         return ResponseEntity.ok(wishlistItems);
     }
 
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     public ResponseEntity<MessageResponse> deleteWishlistItem(@RequestBody WishlistDeleteRequest request){
         MessageResponse response = wishlistService.deleteWishlistItem(request);
         if(response.getMessage().contains("Food item is not in the wishlist"))
