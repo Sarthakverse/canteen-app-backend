@@ -7,6 +7,7 @@ import com.razorpay.Order;
 import com.razorpay.Payment;
 import com.razorpay.RazorpayException;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.json.JSONParser;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +28,7 @@ public class PaymentController {
 
     @PostMapping("/create-order")
     public ResponseEntity<?> createOrder(@RequestBody CreatePaymentRequest request) {
-        //Order order = new Order(new JSONObject());
-        //var order=paymentService.createOrder(request.getAmount(), request.getCurrency(), request.getReceipt());
-        //return ResponseEntity.ok(order.toString());
+
         try {
             Order order = paymentService.createOrder(request.getAmount(), request.getCurrency(), request.getReceipt());
             return ResponseEntity.ok(order.toString());
@@ -40,8 +39,6 @@ public class PaymentController {
 
     @PostMapping("/capture-payment")
     public ResponseEntity<?> capturePayment(@RequestBody CapturePaymentRequest request) {
-//        Payment payment = paymentService.capturePayment(request.getPaymentId(), request.getAmount());
-//        return ResponseEntity.ok(payment);
         try {
             Payment payment = paymentService.capturePayment(request.getPaymentId(), request.getAmount());
             return ResponseEntity.ok(payment.toString());

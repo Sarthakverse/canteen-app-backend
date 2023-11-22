@@ -1,13 +1,19 @@
 package com.example.jwtauthorisedlogin.service;
 
+import com.example.jwtauthorisedlogin.Entity.PaymentEntity;
+import com.example.jwtauthorisedlogin.repository.PaymentRepository;
+import com.example.jwtauthorisedlogin.user.User;
 import com.razorpay.Order;
 import com.razorpay.Payment;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -16,12 +22,14 @@ public class PaymentService {
     private final String razorpayKeyId;
     private final String razorpayKeySecret;
     private final RazorpayClient razorpayClient;
+    private final PaymentRepository paymentRepository;
 
     public PaymentService(
             @Value("${rzp_key_id}") String razorpayKeyId,
-            @Value("${rzp_key_secret}") String razorpayKeySecret) {
+            @Value("${rzp_key_secret}") String razorpayKeySecret, PaymentRepository paymentRepository) {
         this.razorpayKeyId = razorpayKeyId;
         this.razorpayKeySecret = razorpayKeySecret;
+        this.paymentRepository = paymentRepository;
         try {
             this.razorpayClient = new RazorpayClient(razorpayKeyId, razorpayKeySecret);
         } catch (RazorpayException e) {
@@ -40,6 +48,18 @@ public class PaymentService {
 //            notes.put("notes_key_1","Tea, Earl Grey, Hot");
 //            orderRequest.put("notes",notes);
             Order order=razorpayClient.orders.create(orderRequest);
+
+            //get user email from jwt token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            User currentUser = (User) authentication.getPrincipal();
+
+            PaymentEntity newPayment=new PaymentEntity();
+            newPayment.setEmail(currentUser.getEmail());
+            newPayment.setPrice(amount);
+            newPayment.setDateTime(LocalDateTime.now());
+            newPayment.setJsonOrder(order.toString());
+            paymentRepository.save(newPayment);
+
             return order;
         } catch (RazorpayException e) {
             throw new RuntimeException("Error creating Razorpay order", e);
@@ -61,7 +81,7 @@ public class PaymentService {
     }
     public List<Order> getAllOrders() throws RazorpayException {
         JSONObject query = new JSONObject();
-        query.put("count", 10); // You can adjust the count based on your requirements
+        query.put("count", 10);
 
         return razorpayClient.orders.fetchAll(query);
     }
