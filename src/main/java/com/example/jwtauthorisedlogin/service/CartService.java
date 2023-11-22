@@ -8,6 +8,7 @@ import com.example.jwtauthorisedlogin.payload.response.DiscountedPriceResponse;
 import com.example.jwtauthorisedlogin.payload.response.GetCartItemResponse;
 import com.example.jwtauthorisedlogin.payload.response.MessageResponse;
 import com.example.jwtauthorisedlogin.repository.CartRepository;
+import com.example.jwtauthorisedlogin.repository.FoodRatingRepository;
 import com.example.jwtauthorisedlogin.repository.FoodRepository;
 import com.example.jwtauthorisedlogin.user.User;
 import jakarta.transaction.Transactional;
@@ -19,13 +20,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 import java.util.Optional;
+
 
 @Service
 @AllArgsConstructor
 public class CartService {
     private final CartRepository cartRepository;
     private final FoodRepository foodRepository;
+
     @Transactional
     public Cart addToCart(CartRequest cartRequest) {
         var selectedFood = foodRepository.findById(cartRequest.getFoodId()).orElse(null);
@@ -33,7 +37,6 @@ public class CartService {
         if (selectedFood != null){
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             User currentUser = (User) authentication.getPrincipal();
-
 
             Cart existingCartItem = cartRepository.findByFoodIdAndUser(selectedFood, currentUser).orElse(null);
             if (existingCartItem != null) {
@@ -50,7 +53,6 @@ public class CartService {
                 cartEntry.setPrice(price);
                 cartEntry.setUser(currentUser);
                 cartEntry.setFoodId(selectedFood);
-
                 return cartRepository.save(cartEntry);
             }
         return null;
