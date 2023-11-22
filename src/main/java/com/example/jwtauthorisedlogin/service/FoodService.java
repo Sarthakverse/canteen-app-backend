@@ -32,7 +32,6 @@ public class FoodService {
     private final FoodRepository foodRepository;
     private final CanteenRepository canteenRepository;
     private final FoodRatingRepository foodRatingRepository;
-
     public MessageResponse createFoodItem(FoodItemRequest request) throws IOException {
         var food = new Food();
         food.setName(request.getName());
@@ -43,7 +42,6 @@ public class FoodService {
         food.setFoodImage(request.getFoodImage());
         food.setIngredients(request.getIngredients());
         food.setIngredientImageList(request.getIngredientImageList());
-
         Food existingFood = foodRepository.findByNameAndCanteenId(request.getName(), request.getCanteenId());
 
         if (existingFood != null) {
