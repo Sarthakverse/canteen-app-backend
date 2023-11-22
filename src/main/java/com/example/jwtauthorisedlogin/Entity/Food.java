@@ -22,6 +22,7 @@ public class Food{
     private Long canteenId;
     private String foodImage;
     private String description;
+    private Double averageRating;
     @ElementCollection
     private List<String> ingredients;
     @ElementCollection

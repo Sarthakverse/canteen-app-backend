@@ -53,7 +53,6 @@ public class FoodRatingService
            }
        }
 
-   //get avg rating of food item
     public double getAvgRating(Long foodItemId) {
          return foodRatingRepository
                  .findAll()
