@@ -41,7 +41,6 @@ public class FoodRatingService
                        newRating.setUser(user);
                        newRating.setFoodItem(foodItem);
                        newRating.setRating(foodRatingRequest.getRating());
-
                        foodRatingRepository.save(newRating);
                        return new MessageResponse("Food rated successfully!");
                    }

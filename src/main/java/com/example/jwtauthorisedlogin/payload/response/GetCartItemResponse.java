@@ -16,4 +16,5 @@ public class GetCartItemResponse {
     private Integer quantity;
     private Double price;
     private Long canteenId;
+    private Double averageRating;
 }
