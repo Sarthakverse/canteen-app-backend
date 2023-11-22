@@ -90,6 +90,9 @@ public class FoodService {
     }
 
     public FoodCategoryResponse getFoodDetails(FoodDetailsRequest request){
+
+        List<Food> foodList=foodRepository.findByNameContainingIgnoreCase(request.getName());
+
         List<Food> foodList=foodRepository.findByNameContaining(request.getName());
         List<FoodRating> allRatings = foodRatingRepository.findAll();
 
@@ -105,6 +108,7 @@ public class FoodService {
             double avgRating = averageRatingsMap.getOrDefault(foodItemId, 0.0);
             food.setAverageRating(avgRating);
         }
+
         return FoodCategoryResponse.builder()
                 .foodItems(foodList)
                 .build();
