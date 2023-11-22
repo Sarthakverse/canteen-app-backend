@@ -9,21 +9,22 @@ import com.example.jwtauthorisedlogin.payload.response.MessageResponse;
 import com.example.jwtauthorisedlogin.repository.CanteenRepository;
 import com.example.jwtauthorisedlogin.repository.FoodRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class FoodService {
+
+    //@Value("${project.image}")
+    private  String path=System.getProperty("user.dir");
 
     private final FoodRepository foodRepository;
     private final CanteenRepository canteenRepository;
@@ -33,13 +34,31 @@ public class FoodService {
         food.setName(request.getName());
         food.setCategory(request.getCategory());
         food.setDescription(request.getDescription());
-        food.setPrice((request.getPrice()));
+        food.setPrice(request.getPrice());
         food.setCanteenId(request.getCanteenId());
-        food.setFoodImage(request.getFoodImage());
         food.setIngredients(request.getIngredients());
         food.setIngredientImageList(request.getIngredientImageList());
 
         Food existingFood = foodRepository.findByNameAndCanteenId(request.getName(), request.getCanteenId());
+
+        if (request.getFoodImage() != null) {
+            MultipartFile foodImageFile = request.getFoodImage();
+
+            String uniqueFileName = UUID.randomUUID().toString() + "_" + foodImageFile.getOriginalFilename();
+            String imagePath = path + "/images/food/" + uniqueFileName;
+
+            if (existingFood != null) {
+                //if (existingFood.getFoodImageName() != null) {
+                    File oldImage = new File(path + "/images/food/" + existingFood.getFoodImageName());
+                    if (oldImage.exists()) {
+                        FileUtils.forceDelete(oldImage);
+                    }
+                //}
+                existingFood.setFoodImageName(uniqueFileName);
+            }
+
+            foodImageFile.transferTo(new File(imagePath));
+        }
 
         if (existingFood != null) {
             existingFood.setCategory(request.getCategory());
@@ -50,17 +69,14 @@ public class FoodService {
             existingFood.setIngredientImageList(request.getIngredientImageList());
             foodRepository.save(existingFood);
 
-            return MessageResponse.builder().message(request.getName()+" was updated").build();
-        }
-        else {
+            return MessageResponse.builder().message(request.getName() + " was updated").build();
+        } else {
             var canteen = canteenRepository.findById(request.getCanteenId()).orElseThrow();
             canteen.getFoods().add(food);
             foodRepository.save(food);
             canteenRepository.save(canteen);
-            return MessageResponse.builder().message(request.getName()+" was added").build();
+            return MessageResponse.builder().message(request.getName() + " was added").build();
         }
-
-
 
     }
 

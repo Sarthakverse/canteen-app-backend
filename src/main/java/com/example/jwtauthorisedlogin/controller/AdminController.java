@@ -1,5 +1,6 @@
 package com.example.jwtauthorisedlogin.controller;
 
+import com.example.jwtauthorisedlogin.Entity.Category;
 import com.example.jwtauthorisedlogin.payload.request.CanteenRequest;
 import com.example.jwtauthorisedlogin.payload.request.FoodItemRequest;
 import com.example.jwtauthorisedlogin.payload.response.MessageResponse;
@@ -8,11 +9,12 @@ import com.example.jwtauthorisedlogin.service.FoodService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/admin")
@@ -22,8 +24,19 @@ public class AdminController {
     private final CanteenService canteenService;
 
     @PostMapping("/create-food-item")
-    public ResponseEntity<MessageResponse> createFoodItem(@Valid @RequestBody FoodItemRequest request){
-
+    public ResponseEntity<MessageResponse> createFoodItem(@RequestParam String name,
+                                                          @RequestParam String category,
+                                                          @RequestParam String description,
+                                                          @RequestParam Double price,
+                                                          @RequestParam("foodImage") MultipartFile foodImage,
+                                                          @RequestParam Long canteenId,
+                                                          @Valid @RequestParam List<String> ingredients,
+                                                          @Valid @RequestParam List<String> ingredientImageList)
+    {
+        Category categoryEnum = Category.valueOf(category);
+        FoodItemRequest request = new FoodItemRequest(
+                name, categoryEnum, description, price, foodImage, canteenId, ingredients, ingredientImageList);
+        System.out.println(request.toString());
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(foodService.createFoodItem(request));
         }

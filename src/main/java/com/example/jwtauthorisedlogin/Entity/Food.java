@@ -3,6 +3,7 @@ package com.example.jwtauthorisedlogin.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
 import java.util.List;
@@ -20,7 +21,9 @@ public class Food{
     private Category category;
     private Double price;
     private Long canteenId;
-    private String foodImage;
+    private String foodImageName;
+    @Transient
+    private MultipartFile foodImage;
     private String description;
     @ElementCollection
     private List<String> ingredients;

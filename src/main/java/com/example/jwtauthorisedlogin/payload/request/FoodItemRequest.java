@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class FoodItemRequest {
     private Category category;
     private String description;
     private Double price;
-    private String foodImage;;
+    private MultipartFile foodImage;
     private Long canteenId;
     @NotEmpty
     @Size(min = 3, max = 3)
@@ -30,4 +31,5 @@ public class FoodItemRequest {
     @NotEmpty
     @Size(min = 3, max = 3)
     private List<String> ingredientImageList;
+
 }
