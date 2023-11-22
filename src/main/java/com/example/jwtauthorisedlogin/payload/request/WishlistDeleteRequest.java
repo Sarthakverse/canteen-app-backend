@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CartRequest {
+public class WishlistDeleteRequest {
+    private String email;
     private Long foodId;
-    private Integer quantity;
 }

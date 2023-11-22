@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WishlistRequest {
-    private String userEmail;
     private Long foodId;
 }

@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CartRequest {
-    private Long foodId;
-    private Integer quantity;
+public class CartDiscountRequest {
+    private String couponCode;
 }

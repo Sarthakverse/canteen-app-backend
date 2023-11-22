@@ -1,6 +1,5 @@
 package com.example.jwtauthorisedlogin.payload.request;
 
-import com.example.jwtauthorisedlogin.user.Gender;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -9,22 +8,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.util.Optional;
+
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProfileUpdateRequest {
+    private String profileImage;
     @NotBlank
-    private String yourName;
-    @Size(max = 10, message = "Contact number must be at most 10 digits")
-    @Pattern(regexp = "^[0-9]+$", message = "Contact number must contain only digits")
+    @Size(min = 3, max = 50)
+    private String fullName;
+
+    @Pattern(regexp = "^(0|([1-9]\\d{9}))$")
     private String contactNumber;
-    @NotBlank
-    private String email;
-    private LocalDate dateOfBirth;
-    private Gender gender;
+
 
 }
