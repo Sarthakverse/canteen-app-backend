@@ -4,6 +4,7 @@ import com.example.jwtauthorisedlogin.Entity.Cart;
 import com.example.jwtauthorisedlogin.Entity.Food;
 import com.example.jwtauthorisedlogin.payload.response.GetCartItemResponse;
 import com.example.jwtauthorisedlogin.user.User;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,5 +23,10 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     List<GetCartItemResponse> findCartResponseByUserEmail(@Param("email") String email);
 
     Optional<Cart> findByFoodIdAndUser(Food foodId,User user);
+
+    @Transactional
+    void deleteByUserEmail(String userEmail);
+
+
 }
 

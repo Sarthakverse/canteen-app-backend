@@ -40,7 +40,7 @@ public class OrderService {
 
             orderHistoryRepository.save(orderHistory);
         }
-        //cartRepository.deleteByUserEmail(userEmail);
+        cartRepository.deleteByUserEmail(userEmail);
     }
 
     public List<OrderHistoryResponse> getOrderHistoryForCurrentUser() {
