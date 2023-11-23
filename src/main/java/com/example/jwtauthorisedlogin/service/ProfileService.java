@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-//service class
 public class ProfileService
 {
     private final UserRepository userRepository;
