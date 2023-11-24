@@ -2,6 +2,7 @@ package com.example.jwtauthorisedlogin.service;
 
 import com.example.jwtauthorisedlogin.Entity.Feedback;
 import com.example.jwtauthorisedlogin.payload.request.FeedbackRequest;
+import com.example.jwtauthorisedlogin.payload.response.FeedbackResponse;
 import com.example.jwtauthorisedlogin.payload.response.MessageResponse;
 import com.example.jwtauthorisedlogin.repository.FeedbackRepository;
 import com.example.jwtauthorisedlogin.repository.UserRepository;
@@ -12,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -65,9 +67,17 @@ public class FeedbackService {
         }
     }
 
-    public List<Feedback> getFeedback()
-    {
-        return feedbackRepository.findAll();
+    public List<FeedbackResponse> getFeedback() {
+        List<Feedback> feedbackList = feedbackRepository.findAll();
+        List<Feedback> filteredFeedbackList = feedbackList.stream()
+                .filter(feedback -> feedback.getFeedback() != null)
+                .collect(Collectors.toList());
+
+        return filteredFeedbackList.stream()
+                .map(FeedbackResponse::new)
+                .collect(Collectors.toList());
+
     }
+
 }
 
