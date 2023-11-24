@@ -4,9 +4,6 @@ import com.example.jwtauthorisedlogin.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Table(name = "_Cart_")
 @Getter
