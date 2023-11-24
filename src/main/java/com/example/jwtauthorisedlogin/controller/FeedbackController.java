@@ -2,6 +2,7 @@ package com.example.jwtauthorisedlogin.controller;
 
 import com.example.jwtauthorisedlogin.Entity.Feedback;
 import com.example.jwtauthorisedlogin.payload.request.FeedbackRequest;
+import com.example.jwtauthorisedlogin.payload.response.FeedbackResponse;
 import com.example.jwtauthorisedlogin.payload.response.MessageResponse;
 import com.example.jwtauthorisedlogin.service.FeedbackService;
 import jakarta.validation.Valid;
@@ -40,11 +41,14 @@ public class FeedbackController {
         }
     }
 
-  @GetMapping("/get-feedback")
-   public ResponseEntity<List<Feedback>> getFeedback(){
-      List<Feedback> feedback = feedbackService.getFeedback();
-      return ResponseEntity.ok(feedback);
-
+    @GetMapping("/get-feedback")
+    public ResponseEntity<List<FeedbackResponse>> getFeedback() {
+        List<FeedbackResponse> feedback = feedbackService.getFeedback();
+        if (feedback != null) {
+            return ResponseEntity.ok(feedback);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
 
