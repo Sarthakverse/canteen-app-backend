@@ -2,7 +2,7 @@ package com.example.jwtauthorisedlogin.Entity;
 
 import com.example.jwtauthorisedlogin.user.User;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
