@@ -123,9 +123,6 @@ public class AuthenticationService {
 
         if(userOptional.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(AuthenticationResponse.builder().message("User not Registered").build());
-//                    AuthenticationResponse.builder()
-//                    .token("User not Registered")
-//                    .build();
         }
 
         var user = userOptional.get();
@@ -140,23 +137,14 @@ public class AuthenticationService {
            catch(Exception e)
            {
                return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthenticationResponse.builder().message("Invalid Credentials").build());
-//                       AuthenticationResponse.builder()
-//                       .token("Invalid Credentials")
-//                       .build();
            }
 
         if(!(user.getIsVerified())){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(AuthenticationResponse.builder().message("User Not Verified").build());
-//                    AuthenticationResponse.builder()
-//                    .token("User Not Verified")
-//                    .build();
         }
 
             var jwtToken = jwtService.generateToken(user);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(AuthenticationResponse.builder().token(jwtToken).build());
-//                    AuthenticationResponse.builder()
-//                    .token(jwtToken)
-//                    .build();
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(AuthenticationResponse.builder().token(jwtToken).name(user.getFullName()).hasRole(user.getRole()).build());
     }
 
 
@@ -164,9 +152,7 @@ public class AuthenticationService {
 
         if(repository.findByEmail(request.getEmail()).isEmpty()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(AuthenticationResponse.builder().message("Invalid Email").build());
-//                    AuthenticationResponse.builder()
-//                    .token("Invalid Email")
-//                    .build();
+
         }
         User user=new User();
         user=repository.findByEmail(request.getEmail()).orElseThrow();
