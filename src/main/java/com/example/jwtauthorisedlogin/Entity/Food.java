@@ -23,10 +23,15 @@ public class Food{
     private String foodImage;
     private String description;
     private Double averageRating;
+    private Boolean isInWishlist;
+    private Boolean isInCart;
+
     @ElementCollection
     private List<String> ingredients;
+
     @ElementCollection
     private List<String> IngredientImageList;
+
     @JsonIgnore
     @ManyToMany(mappedBy = "foods",fetch = FetchType.LAZY)
     private Set<Canteen> canteens = new HashSet<>();

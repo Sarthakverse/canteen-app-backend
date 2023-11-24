@@ -25,11 +25,14 @@ public class FoodController {
     private final CanteenService canteenService;
 
     @PostMapping("/get-food-items")
-    public ResponseEntity<FoodCategoryResponse> getFoodItems(
-             @RequestBody FoodCategoryRequest request
-            ){
+    public ResponseEntity<FoodCategoryResponse> getFoodItems(@RequestBody FoodCategoryRequest request)
+    {
         try {
-            return ResponseEntity.ok(foodService.getFoodItem(request));
+            var foodItems = foodService.getFoodItem(request);
+            if(foodItems!=null)
+                return ResponseEntity.ok(foodItems);
+            else
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
