@@ -7,32 +7,31 @@ import com.example.jwtauthorisedlogin.payload.request.FoodDetailsRequest;
 import com.example.jwtauthorisedlogin.payload.request.FoodItemRequest;
 import com.example.jwtauthorisedlogin.payload.response.FoodCategoryResponse;
 import com.example.jwtauthorisedlogin.payload.response.MessageResponse;
-import com.example.jwtauthorisedlogin.repository.CanteenRepository;
-import com.example.jwtauthorisedlogin.repository.FoodRatingRepository;
-import com.example.jwtauthorisedlogin.repository.FoodRepository;
+import com.example.jwtauthorisedlogin.repository.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class FoodService {
 
     private final FoodRepository foodRepository;
     private final CanteenRepository canteenRepository;
     private final FoodRatingRepository foodRatingRepository;
-    public MessageResponse createFoodItem(FoodItemRequest request) throws IOException {
+    private final UserRepository userRepository;
+    private final UserWishlistRepository userWishlistRepository;
+    private final CartRepository cartRepository;
+    public MessageResponse createFoodItem(FoodItemRequest request) {
         var food = new Food();
         food.setName(request.getName());
         food.setCategory(request.getCategory());
@@ -68,25 +67,45 @@ public class FoodService {
     }
 
     public FoodCategoryResponse getFoodItem(FoodCategoryRequest request){
-        List<Food> foodList = foodRepository.findByCategory(request.getCategory());
-        List<FoodRating> allRatings = foodRatingRepository.findAll();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
 
-        Map<String, Double> averageRatingsMap = allRatings.stream()
-                .filter(rating -> rating.getFoodItem() != null)
-                .collect(Collectors.groupingBy(
-                        rating -> rating.getFoodItem().getId() + "-" + rating.getFoodItem().getCanteenId(),
-                        Collectors.averagingDouble(FoodRating::getRating)
-                ));
+        var user = userRepository.findByEmail(userEmail).orElse(null);
+        if(user !=null) {
+            var userWishlist = userWishlistRepository.findByUserEmail(userEmail);
+            var cart = cartRepository.findByUserEmail(userEmail);
+            List<Food> foodList = foodRepository.findByCategory(request.getCategory());
+            List<FoodRating> allRatings = foodRatingRepository.findAll();
 
-        for (Food food : foodList) {
-            String key = food.getId() + "-" + food.getCanteenId();
-            double avgRating = averageRatingsMap.getOrDefault(key, 0.0);
-            food.setAverageRating(avgRating);
-            foodRepository.save(food);
+
+            Map<String, Double> averageRatingsMap = allRatings.stream()
+                    .filter(rating -> rating.getFoodItem() != null)
+                    .collect(Collectors.groupingBy(
+                            rating -> rating.getFoodItem().getId() + "-" + rating.getFoodItem().getCanteenId(),
+                            Collectors.averagingDouble(FoodRating::getRating)
+                    ));
+            List<Food> updatedFoods = new ArrayList<>();
+            for (Food food : foodList) {
+                String key = food.getId() + "-" + food.getCanteenId();
+                double avgRating = averageRatingsMap.getOrDefault(key, 0.0);
+                food.setAverageRating(avgRating);
+
+                boolean isInWishlist = userWishlist.stream().anyMatch(wishlistItem -> wishlistItem.getFood().getId().equals(food.getId()));
+                food.setIsInWishlist(isInWishlist);
+
+                boolean isInCart = cart.stream().anyMatch(cartItem -> cartItem.getFoodId().getId().equals(food.getId()));
+                food.setIsInCart(isInCart);
+                updatedFoods.add(food);
+            }
+            foodRepository.saveAll(updatedFoods);
+            return FoodCategoryResponse.builder()
+                    .foodItems(foodList)
+                    .build();
+
         }
-        return FoodCategoryResponse.builder()
-                .foodItems(foodList)
-                .build();
+        else{
+            return null;
+        }
     }
 
     public FoodCategoryResponse getFoodDetails(FoodDetailsRequest request){

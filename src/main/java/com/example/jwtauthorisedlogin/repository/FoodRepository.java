@@ -15,4 +15,5 @@ public interface FoodRepository extends JpaRepository<Food,Long> {
     List<Food> findByNameContaining(String name);
 
     Food findByNameAndCanteenId(String name, Long canteenId);
+
 }

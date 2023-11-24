@@ -16,4 +16,5 @@ public interface UserWishlistRepository extends JpaRepository<UserWishlist, Long
 
     Optional<UserWishlist> findByUserAndFood(User user, Food food);
 
+
 }
