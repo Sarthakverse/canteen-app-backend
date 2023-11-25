@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartItemDeleteRequest {
-    private Long cartItemId;
+    private Long foodItemId;
 }

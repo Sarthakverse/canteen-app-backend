@@ -135,36 +135,55 @@ public class FoodService {
         }
     }
 
-    public FoodCategoryResponse getFoodDetails(FoodDetailsRequest request){
-        List<Food> foodList=foodRepository.findAllByNameContainingIgnoreCase(request.getName());
-        List<FoodRating> allRatings = foodRatingRepository.findAll();
+    public FoodCategoryResponse getFoodDetails(FoodDetailsRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
 
-        Map<Long, Double> averageRatingsMap = allRatings.stream()
-                .filter(rating -> rating.getFoodItem() != null)
-                .collect(Collectors.groupingBy(
-                        rating -> rating.getFoodItem().getId(),
-                        Collectors.averagingDouble(FoodRating::getRating)
-                ));
-        Map<Long, Long> totalRatingsMap = allRatings.stream()
-                .filter(rating -> rating.getFoodItem() != null)
-                .collect(Collectors.groupingBy(
-                        rating -> rating.getFoodItem().getId(),
-                        Collectors.counting()
-                ));
+        var user = userRepository.findByEmail(userEmail).orElse(null);
+        if (user != null) {
+            List<Food> foodList = foodRepository.findAllByNameContainingIgnoreCase(request.getName());
+            List<FoodRating> allRatings = foodRatingRepository.findAll();
 
-        for (Food food : foodList) {
-            long foodItemId = food.getId();
-            double avgRating = averageRatingsMap.getOrDefault(foodItemId, 0.0);
-            food.setNoOfRatings(totalRatingsMap.getOrDefault(food.getId(), 0L));
-            food.setAverageRating(avgRating);
+            var userWishlist = userWishlistRepository.findByUserEmail(userEmail);
+            var cart = cartRepository.findByUserEmail(userEmail);
+
+            Map<Long, Double> averageRatingsMap = allRatings.stream()
+                    .filter(rating -> rating.getFoodItem() != null)
+                    .collect(Collectors.groupingBy(
+                            rating -> rating.getFoodItem().getId(),
+                            Collectors.averagingDouble(FoodRating::getRating)
+                    ));
+            Map<Long, Long> totalRatingsMap = allRatings.stream()
+                    .filter(rating -> rating.getFoodItem() != null)
+                    .collect(Collectors.groupingBy(
+                            rating -> rating.getFoodItem().getId(),
+                            Collectors.counting()
+                    ));
+
+            for (Food food : foodList) {
+                long foodItemId = food.getId();
+                double avgRating = averageRatingsMap.getOrDefault(foodItemId, 0.0);
+                food.setNoOfRatings(totalRatingsMap.getOrDefault(food.getId(), 0L));
+                food.setAverageRating(avgRating);
+
+                boolean isInWishlist = userWishlist.stream().anyMatch(wishlistItem -> wishlistItem.getFood().getId().equals(food.getId()));
+                boolean isInCart = cart.stream().anyMatch(cartItem -> cartItem.getFoodId().getId().equals(food.getId()));
+
+                food.setIsInWishlist(isInWishlist);
+                food.setIsInCart(isInCart);
+            }
+            return FoodCategoryResponse.builder()
+                    .foodItems(foodList)
+                    .build();
+        }else{
+            return null;
         }
-        return FoodCategoryResponse.builder()
-                .foodItems(foodList)
-                .build();
     }
-    public Optional<Food> getFoodById(Long id){
-        return foodRepository.findById(id);
-    }
+
+        public Optional<Food> getFoodById (Long id){
+            return foodRepository.findById(id);
+        }
+
     // category list, name, veg
 
     // findByjs.............(
