@@ -32,6 +32,7 @@ public class FoodService {
     private final UserRepository userRepository;
     private final UserWishlistRepository userWishlistRepository;
     private final CartRepository cartRepository;
+
     public MessageResponse createFoodItem(FoodItemRequest request) {
         var food = new Food();
         food.setName(request.getName());
@@ -65,11 +66,7 @@ public class FoodService {
             canteenRepository.save(canteen);
             return MessageResponse.builder().message(request.getName()+" was added").build();
         }
-
-
-
     }
-
     public FoodCategoryResponse getFoodItem(FoodCategoryRequest request){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
