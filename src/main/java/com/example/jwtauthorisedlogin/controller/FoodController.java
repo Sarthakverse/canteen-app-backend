@@ -1,6 +1,7 @@
 package com.example.jwtauthorisedlogin.controller;
 
 import com.example.jwtauthorisedlogin.Entity.Canteen;
+import com.example.jwtauthorisedlogin.Entity.Category;
 import com.example.jwtauthorisedlogin.Entity.Food;
 import com.example.jwtauthorisedlogin.payload.request.FoodCategoryRequest;
 import com.example.jwtauthorisedlogin.payload.request.FoodDetailsRequest;
@@ -9,12 +10,12 @@ import com.example.jwtauthorisedlogin.payload.response.CanteenFoodResponse;
 import com.example.jwtauthorisedlogin.payload.response.FoodCategoryResponse;
 import com.example.jwtauthorisedlogin.service.CanteenService;
 import com.example.jwtauthorisedlogin.service.FoodService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -84,5 +85,26 @@ public class FoodController {
         return canteen.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Food>> searchFoods(
+            @RequestParam(value = "canteenId", required = false, defaultValue = "") Long canteenId,
+            @RequestParam(value="foodName", required= false, defaultValue = "") String foodName,
+            @RequestParam(value="category", required= false, defaultValue = "") String category,
+            @RequestParam(value="lowPrice", required= false, defaultValue = "0.0") Double lowPrice,
+            @RequestParam(value="highPrice", required= false, defaultValue = "1.7976931348623157E308    ") Double highPrice,
+            @RequestParam(value="veg", required= false, defaultValue = "") Boolean veg,
+            @RequestParam(value="rating", required= false, defaultValue = "0.0") Double rating
+    ) {
+
+        Category categoryEnum = (category.isBlank()) ? Category.ALL : Category.valueOf(category);
+
+        try {
+            return ResponseEntity.ok(foodService.search(canteenId,foodName,categoryEnum,lowPrice,highPrice,veg,rating));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
 
 }
