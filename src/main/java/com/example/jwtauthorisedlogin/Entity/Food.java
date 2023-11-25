@@ -28,12 +28,11 @@ public class Food{
     @Transient
     private Long noOfRatings;
 
+    private Boolean veg;
     @ElementCollection
     private List<String> ingredients;
-
     @ElementCollection
     private List<String> IngredientImageList;
-
     @JsonIgnore
     @ManyToMany(mappedBy = "foods",fetch = FetchType.LAZY)
     private Set<Canteen> canteens = new HashSet<>();

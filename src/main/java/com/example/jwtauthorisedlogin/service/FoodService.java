@@ -1,5 +1,6 @@
 package com.example.jwtauthorisedlogin.service;
 
+import com.example.jwtauthorisedlogin.Entity.Category;
 import com.example.jwtauthorisedlogin.Entity.Food;
 import com.example.jwtauthorisedlogin.Entity.FoodRating;
 import com.example.jwtauthorisedlogin.payload.request.FoodCategoryRequest;
@@ -39,6 +40,8 @@ public class FoodService {
         food.setPrice((request.getPrice()));
         food.setCanteenId(request.getCanteenId());
         food.setFoodImage(request.getFoodImage());
+        food.setVeg(request.getVeg());
+
         food.setIngredients(request.getIngredients());
         food.setIngredientImageList(request.getIngredientImageList());
         Food existingFood = foodRepository.findByNameAndCanteenId(request.getName(), request.getCanteenId());
@@ -48,6 +51,7 @@ public class FoodService {
             existingFood.setDescription(request.getDescription());
             existingFood.setPrice(request.getPrice());
             existingFood.setFoodImage(request.getFoodImage());
+            existingFood.setVeg(request.getVeg());
             existingFood.setIngredients(request.getIngredients());
             existingFood.setIngredientImageList(request.getIngredientImageList());
             foodRepository.save(existingFood);
@@ -118,10 +122,7 @@ public class FoodService {
     }
 
     public FoodCategoryResponse getFoodDetails(FoodDetailsRequest request){
-
-        List<Food> foodList=foodRepository.findByNameContaining(request.getName());
-
-
+        List<Food> foodList=foodRepository.findAllByNameContainingIgnoreCase(request.getName());
         List<FoodRating> allRatings = foodRatingRepository.findAll();
 
         Map<Long, Double> averageRatingsMap = allRatings.stream()
@@ -143,7 +144,6 @@ public class FoodService {
             food.setNoOfRatings(totalRatingsMap.getOrDefault(food.getId(), 0L));
             food.setAverageRating(avgRating);
         }
-
         return FoodCategoryResponse.builder()
                 .foodItems(foodList)
                 .build();
@@ -151,5 +151,15 @@ public class FoodService {
     public Optional<Food> getFoodById(Long id){
         return foodRepository.findById(id);
     }
+    // category list, name, veg
+
+    // findByjs.............(
+    public List<Food> search(Long canteenId, String foodName, Category category, Double lowPrice, Double highPrice, Boolean veg, Double rating){
+        List<Food> foodList=foodRepository.findFoodsByCriteria(canteenId,foodName,category,lowPrice,highPrice,veg,rating);
+        System.out.println(foodList);
+        return foodList;
+        //return foodRepository.findAllByCanteenIdAndNameContainingIgnoreCaseAndCategoryAndPriceBetweenAndVegAndAverageRatingAfter(canteenId,foodName,category,lowPrice,highPrice,veg,rating);
+    }
+
 
 }
