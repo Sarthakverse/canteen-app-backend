@@ -83,6 +83,9 @@ public class WishlistService {
 
             assert wishlistItem != null;
             wishlistRepository.delete(wishlistItem);
+            assert food != null;
+            food.setIsInWishlist(false);
+            foodRepository.save(food);
 
             return MessageResponse.builder().message("Food item deleted from the wishlist").build();
         } else {

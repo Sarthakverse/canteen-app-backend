@@ -29,6 +29,12 @@ public class AdminController {
         }
     }
 
+    @DeleteMapping("/delete/{foodItemId}")
+    public ResponseEntity<MessageResponse> deleteFoodItem(@PathVariable Long foodItemId) {
+        MessageResponse response = foodService.deleteFoodItemById(foodItemId);
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/create-canteen")
     public ResponseEntity<MessageResponse> createCanteen(@RequestBody CanteenRequest request){
 
