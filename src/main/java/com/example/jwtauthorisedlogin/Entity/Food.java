@@ -25,6 +25,8 @@ public class Food{
     private Double averageRating;
     private Boolean isInWishlist;
     private Boolean isInCart;
+    @Transient
+    private Long noOfRatings;
 
     @ElementCollection
     private List<String> ingredients;

@@ -84,6 +84,13 @@ public class FoodService {
                             rating -> rating.getFoodItem().getId() + "-" + rating.getFoodItem().getCanteenId(),
                             Collectors.averagingDouble(FoodRating::getRating)
                     ));
+            Map<Long, Long> totalRatingsMap = allRatings.stream()
+                    .filter(rating -> rating.getFoodItem() != null)
+                    .collect(Collectors.groupingBy(
+                            rating -> rating.getFoodItem().getId(),
+                            Collectors.counting()
+                    ));
+
             List<Food> updatedFoods = new ArrayList<>();
             for (Food food : foodList) {
                 String key = food.getId() + "-" + food.getCanteenId();
@@ -95,6 +102,8 @@ public class FoodService {
 
                 boolean isInCart = cart.stream().anyMatch(cartItem -> cartItem.getFoodId().getId().equals(food.getId()));
                 food.setIsInCart(isInCart);
+
+                food.setNoOfRatings(totalRatingsMap.getOrDefault(food.getId(), 0L));
                 updatedFoods.add(food);
             }
             foodRepository.saveAll(updatedFoods);
@@ -121,10 +130,17 @@ public class FoodService {
                         rating -> rating.getFoodItem().getId(),
                         Collectors.averagingDouble(FoodRating::getRating)
                 ));
+        Map<Long, Long> totalRatingsMap = allRatings.stream()
+                .filter(rating -> rating.getFoodItem() != null)
+                .collect(Collectors.groupingBy(
+                        rating -> rating.getFoodItem().getId(),
+                        Collectors.counting()
+                ));
 
         for (Food food : foodList) {
             long foodItemId = food.getId();
             double avgRating = averageRatingsMap.getOrDefault(foodItemId, 0.0);
+            food.setNoOfRatings(totalRatingsMap.getOrDefault(food.getId(), 0L));
             food.setAverageRating(avgRating);
         }
 
