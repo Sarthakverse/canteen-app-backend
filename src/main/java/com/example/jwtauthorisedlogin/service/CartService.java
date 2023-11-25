@@ -42,6 +42,8 @@ public class CartService {
             if (existingCartItem != null) {
                 existingCartItem.setQuantity(cartRequest.getQuantity());
                 existingCartItem.setPrice(selectedFood.getPrice() * cartRequest.getQuantity());
+                selectedFood.setIsInCart(true);
+                foodRepository.save(selectedFood);
                 return cartRepository.save(existingCartItem);
             }
 
@@ -53,6 +55,8 @@ public class CartService {
                 cartEntry.setPrice(price);
                 cartEntry.setUser(currentUser);
                 cartEntry.setFoodId(selectedFood);
+                selectedFood.setIsInCart(true);
+                foodRepository.save(selectedFood);
                 return cartRepository.save(cartEntry);
             }
         return null;

@@ -50,6 +50,9 @@ public class WishlistService {
 
         wishlistRepository.save(wishlistItem);
 
+        food.setIsInWishlist(true);
+        foodRepository.save(food);
+
         return MessageResponse.builder().message("Food item added to the wishlist").build();
     }
 
