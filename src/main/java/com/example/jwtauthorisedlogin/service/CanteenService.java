@@ -2,15 +2,18 @@ package com.example.jwtauthorisedlogin.service;
 
 import com.example.jwtauthorisedlogin.Entity.Canteen;
 import com.example.jwtauthorisedlogin.Entity.Food;
+import com.example.jwtauthorisedlogin.Entity.FoodRating;
+import com.example.jwtauthorisedlogin.Entity.UserWishlist;
 import com.example.jwtauthorisedlogin.payload.request.CanteenRequest;
 import com.example.jwtauthorisedlogin.payload.request.FoodDetailsRequest;
 import com.example.jwtauthorisedlogin.payload.response.CanteenDetailsResponse;
 import com.example.jwtauthorisedlogin.payload.response.CanteenFoodResponse;
 import com.example.jwtauthorisedlogin.payload.response.MessageResponse;
-import com.example.jwtauthorisedlogin.repository.CanteenFoodRepository;
-import com.example.jwtauthorisedlogin.repository.CanteenRepository;
-import com.example.jwtauthorisedlogin.repository.FoodRepository;
+import com.example.jwtauthorisedlogin.repository.*;
+import com.example.jwtauthorisedlogin.user.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -19,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +30,7 @@ public class CanteenService {
     private final CanteenRepository canteenRepository;
     private final FoodRepository foodRepository;
     private final CanteenFoodRepository canteenFoodRepository;
+    private final FoodRatingRepository foodRatingRepository;
 
     public MessageResponse createCanteen(CanteenRequest request){
         if (canteenRepository.findByEmail(request.getEmail())!=null) {
@@ -42,14 +47,41 @@ public class CanteenService {
         return MessageResponse.builder().message(request.getName()+" was added").build();
     }
     public CanteenFoodResponse canteenFood(FoodDetailsRequest request){
-        var canteen= canteenRepository.findByName(request.getName());
-        Set<Long> foodItemsId=canteenFoodRepository.findFoodIdsByCanteenId(canteen.getId());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+        var canteen = canteenRepository.findByName(request.getName());
+        Set<Long> foodItemsId = canteenFoodRepository.findFoodIdsByCanteenId(canteen.getId());
         Set<Food> foodItems = new HashSet<>();
 
-        for (Long foodId : foodItemsId) {
-            foodRepository.findById(foodId).ifPresent(foodItems::add);
-        }
+        Set<Long> cartFoodItemIds = currentUser.getCarts().stream()
+                .map(cart -> cart.getFoodId().getId())
+                .collect(Collectors.toSet());
 
+        Set<Long> wishlistFoodItemIds = currentUser.getWishlist().stream()
+                .map(wishlist -> wishlist.getFood().getId())
+                .collect(Collectors.toSet());
+
+        for (Long foodId : foodItemsId) {
+            Optional<Food> optionalFood = foodRepository.findById(foodId);
+            optionalFood.ifPresent(food -> {
+
+                boolean isInCart = cartFoodItemIds.contains(food.getId());
+
+
+                boolean isInWishlist = wishlistFoodItemIds.contains(food.getId());
+                // Fetch ratings for the current food item
+                List<FoodRating> ratingsForFood = foodRatingRepository.findByFoodItem(food);
+
+                long totalRatings = ratingsForFood.stream().count();
+
+                food.setNoOfRatings(totalRatings);
+
+                food.setIsInCart(isInCart);
+                food.setIsInWishlist(isInWishlist);
+
+                foodItems.add(food);
+            });
+        }
         return CanteenFoodResponse.builder().foodItems(foodItems).build();
     }
     public CanteenDetailsResponse canteenDetails(){

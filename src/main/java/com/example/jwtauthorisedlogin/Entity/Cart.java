@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "_Cart_")
 @Data
@@ -15,14 +17,14 @@ public class Cart {
     private String foodItemName;
     private Integer quantity;
     private Double price;
-    @JsonIgnore
+
     @ManyToOne
     @JoinColumn(name = "user_email", referencedColumnName = "email")
     private User user;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "food_item_id",referencedColumnName = "id")
     private Food foodId;
+
 }
 

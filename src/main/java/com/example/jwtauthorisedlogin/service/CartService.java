@@ -12,6 +12,7 @@ import com.example.jwtauthorisedlogin.repository.CartRepository;
 import com.example.jwtauthorisedlogin.repository.FoodRatingRepository;
 import com.example.jwtauthorisedlogin.repository.FoodRepository;
 import com.example.jwtauthorisedlogin.user.User;
+import jakarta.servlet.ServletOutputStream;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -66,23 +67,17 @@ public class CartService {
 
     @Transactional
     public ResponseEntity<MessageResponse> deleteCartItem(CartItemDeleteRequest cartItemDeleteRequest) {
-        Optional<Cart> cartItemOpt = cartRepository.findById(cartItemDeleteRequest.getCartItemId());
-
-        if (cartItemOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(MessageResponse.builder().message("Item not found in the cart").build());
-        }
-
-        Cart cartItem = cartItemOpt.get();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) authentication.getPrincipal();
-        Food food = cartItem.getFoodId();
-        if (!cartItem.getUser().equals(currentUser)) {
+        Cart cartItem = cartRepository.findByFoodIdIdAndUserEmail(cartItemDeleteRequest.getFoodItemId(), currentUser.getEmail()).orElse(null);
+        if (cartItem == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(MessageResponse.builder().message("Item not found in the cart").build());
         }
 
-        cartRepository.delete(cartItem);
+        cartRepository.deleteById(cartItem.getId());
+
+        Food food = cartItem.getFoodId();
         food.setIsInCart(false);
         foodRepository.save(food);
 
