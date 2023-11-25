@@ -13,4 +13,6 @@ public interface CanteenFoodRepository extends JpaRepository<CanteenFood,Long> {
     @Query("SELECT cf.food.id FROM CanteenFood cf WHERE cf.canteen.id = :canteenId")
     Set<Long> findFoodIdsByCanteenId(@Param("canteenId") Long canteenId);
 
+    void deleteByFood(Food food);
+
 }

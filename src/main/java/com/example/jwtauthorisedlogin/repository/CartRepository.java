@@ -26,5 +26,6 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
 
     @Transactional
     void deleteByUserEmail(String userEmail);
+    void deleteByFoodId(Food foodId);
 }
 

@@ -41,7 +41,6 @@ public class CanteenService {
 
         return MessageResponse.builder().message(request.getName()+" was added").build();
     }
-
     public CanteenFoodResponse canteenFood(FoodDetailsRequest request){
         var canteen= canteenRepository.findByName(request.getName());
         Set<Long> foodItemsId=canteenFoodRepository.findFoodIdsByCanteenId(canteen.getId());

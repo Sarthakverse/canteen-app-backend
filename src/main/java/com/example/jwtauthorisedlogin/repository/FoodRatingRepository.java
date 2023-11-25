@@ -12,5 +12,6 @@ import java.util.Optional;
 @Repository
 public interface FoodRatingRepository extends JpaRepository<FoodRating,Long> {
     Optional<FoodRating> findByUserAndFoodItem(User user, Food foodItem);
+    void deleteByFoodItem(Food foodItem);
 
 }
