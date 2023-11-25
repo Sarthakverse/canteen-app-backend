@@ -32,6 +32,7 @@ public class FoodService {
     private final UserRepository userRepository;
     private final UserWishlistRepository userWishlistRepository;
     private final CartRepository cartRepository;
+    private final CanteenFoodRepository canteenFoodRepository;
 
     public MessageResponse createFoodItem(FoodItemRequest request) {
         var food = new Food();
@@ -65,6 +66,22 @@ public class FoodService {
             foodRepository.save(food);
             canteenRepository.save(canteen);
             return MessageResponse.builder().message(request.getName()+" was added").build();
+        }
+    }
+
+    public MessageResponse deleteFoodItemById(Long foodItemId) {
+        Optional<Food> optionalFood = foodRepository.findById(foodItemId);
+
+        if (optionalFood.isPresent()) {
+            Food food = optionalFood.get();
+            cartRepository.deleteByFoodId(food);
+            canteenFoodRepository.deleteByFood(food);
+            userWishlistRepository.deleteByFood(food);
+            foodRatingRepository.deleteByFoodItem(food);
+            foodRepository.deleteById(foodItemId);
+            return MessageResponse.builder().message(food.getName() + " was deleted").build();
+        } else {
+            return MessageResponse.builder().message("Food item with ID " + foodItemId + " not found").build();
         }
     }
     public FoodCategoryResponse getFoodItem(FoodCategoryRequest request){

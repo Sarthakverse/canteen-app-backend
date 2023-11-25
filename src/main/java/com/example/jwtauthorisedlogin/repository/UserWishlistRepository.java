@@ -15,6 +15,7 @@ public interface UserWishlistRepository extends JpaRepository<UserWishlist, Long
     boolean existsByUserAndFood(User user, Food food);
 
     Optional<UserWishlist> findByUserAndFood(User user, Food food);
+    void deleteByFood(Food food);
 
 
 }

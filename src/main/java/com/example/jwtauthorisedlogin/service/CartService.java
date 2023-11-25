@@ -1,6 +1,7 @@
 package com.example.jwtauthorisedlogin.service;
 
 import com.example.jwtauthorisedlogin.Entity.Cart;
+import com.example.jwtauthorisedlogin.Entity.Food;
 import com.example.jwtauthorisedlogin.payload.request.CartDiscountRequest;
 import com.example.jwtauthorisedlogin.payload.request.CartItemDeleteRequest;
 import com.example.jwtauthorisedlogin.payload.request.CartRequest;
@@ -73,16 +74,17 @@ public class CartService {
         }
 
         Cart cartItem = cartItemOpt.get();
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) authentication.getPrincipal();
-
+        Food food = cartItem.getFoodId();
         if (!cartItem.getUser().equals(currentUser)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(MessageResponse.builder().message("Item not found in the cart").build());
         }
 
         cartRepository.delete(cartItem);
+        food.setIsInCart(false);
+        foodRepository.save(food);
 
         return ResponseEntity.ok(MessageResponse.builder().message("Item deleted from the cart").build());
     }
