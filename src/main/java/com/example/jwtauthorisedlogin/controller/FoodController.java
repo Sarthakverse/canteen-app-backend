@@ -97,7 +97,7 @@ public class FoodController {
             @RequestParam(value="rating", required= false, defaultValue = "0.0") Double rating
     ) {
 
-        Category categoryEnum = (category.isBlank()) ? Category.ALL : Category.valueOf(category);
+        Category categoryEnum = (category.isBlank()) ? null : Category.valueOf(category);
 
         try {
             return ResponseEntity.ok(foodService.search(canteenId,foodName,categoryEnum,lowPrice,highPrice,veg,rating));

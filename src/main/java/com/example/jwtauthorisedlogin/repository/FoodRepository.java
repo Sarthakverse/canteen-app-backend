@@ -29,7 +29,7 @@ public interface FoodRepository extends JpaRepository<Food,Long> {
     @Query("SELECT f FROM Food f " +
             "WHERE (:canteenId IS NULL OR f.canteenId = :canteenId) " +
             "AND LOWER(f.name) LIKE LOWER(CONCAT('%', :name, '%')) " +
-            "AND (:category IS NULL OR :category = 'ALL' OR f.category = :category)" +
+            "AND (:category IS NULL OR f.category = :category ) " +
             "AND f.price BETWEEN :lowPrice AND :highPrice " +
             "AND ((:veg IS NULL AND f.veg IS NOT NULL) OR f.veg = :veg) " +
             "AND f.averageRating >= :averageRating")
