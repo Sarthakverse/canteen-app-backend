@@ -86,7 +86,7 @@ public class FoodController {
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<List<Food>> searchFoods(
             @RequestParam(value = "canteenId", required = false, defaultValue = "") Long canteenId,
             @RequestParam(value="foodName", required= false, defaultValue = "") String foodName,
