@@ -33,6 +33,8 @@ public class User implements UserDetails {
     private String phoneNo;
     private String profileImage;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Set<UserWishlist> wishlist = new HashSet<>();
@@ -64,8 +66,6 @@ public class User implements UserDetails {
         isVerified = verified;
     }
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

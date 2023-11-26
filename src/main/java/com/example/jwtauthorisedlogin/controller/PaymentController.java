@@ -1,7 +1,9 @@
 package com.example.jwtauthorisedlogin.controller;
 
+import com.example.jwtauthorisedlogin.Entity.OrderHistory;
 import com.example.jwtauthorisedlogin.payload.request.CapturePaymentRequest;
 import com.example.jwtauthorisedlogin.payload.request.CreatePaymentRequest;
+import com.example.jwtauthorisedlogin.payload.response.OrderHistoryResponse;
 import com.example.jwtauthorisedlogin.service.PaymentService;
 import com.razorpay.Order;
 import com.razorpay.Payment;
@@ -53,6 +55,31 @@ public class PaymentController {
             return ResponseEntity.ok(orders.toString());
         } catch (RazorpayException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching orders");
+        }
+    }
+
+    @GetMapping("/order-history")
+    public ResponseEntity<List<OrderHistoryResponse>> getOrderHistoryForCurrentUser() {
+        try{
+            return ResponseEntity.ok(paymentService.getOrderHistoryForCurrentUser());
+        } catch(IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+    @GetMapping("/current-order")
+    public ResponseEntity<List<OrderHistoryResponse>> getCurrentOrder(){
+        try{
+            return ResponseEntity.ok(paymentService.getCurrentOrder());
+        } catch(IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+    @GetMapping("/previous-order")
+    public ResponseEntity<List<OrderHistoryResponse>> getPreviousOrder(){
+        try{
+            return ResponseEntity.ok(paymentService.getPreviousOrder());
+        } catch(IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(null);
         }
     }
 }

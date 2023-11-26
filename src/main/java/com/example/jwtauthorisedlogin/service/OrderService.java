@@ -40,25 +40,25 @@ public class OrderService {
             orderHistoryRepository.save(orderHistory);
         }
         cartRepository.deleteByUserEmail(userEmail);
-    }
+    }}
 
-    public List<OrderHistoryResponse> getOrderHistoryForCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
-        String userEmail = currentUser.getEmail();
-
-        List<OrderHistory> orderHistoryList = orderHistoryRepository.findByUserEmail(userEmail);
-
-        return orderHistoryList.stream()
-                .map(orderHistory -> new OrderHistoryResponse(
-                        orderHistory.getId(),
-                        orderHistory.getFoodItemName(),
-                        orderHistory.getFoodId().getId(),
-                        orderHistory.getQuantity(),
-                        orderHistory.getPrice(),
-                        orderHistory.getUser().getEmail(),
-                        orderHistory.getOrderDateTime()
-                ))
-                .collect(Collectors.toList());
-    }
-}
+//    public List<OrderHistoryResponse> getOrderHistoryForCurrentUser() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        User currentUser = (User) authentication.getPrincipal();
+//        String userEmail = currentUser.getEmail();
+//
+//        List<OrderHistory> orderHistoryList = orderHistoryRepository.findByUserEmail(userEmail);
+//
+//        return orderHistoryList.stream()
+//                .map(orderHistory -> new OrderHistoryResponse(
+//                        orderHistory.getId(),
+//                        orderHistory.getFoodItemName(),
+//                        orderHistory.getFoodId().getId(),
+//                        orderHistory.getQuantity(),
+//                        orderHistory.getPrice(),
+//                        orderHistory.getUser().getEmail(),
+//                        orderHistory.getOrderDateTime()
+//                ))
+//                .collect(Collectors.toList());
+//    }
+//}

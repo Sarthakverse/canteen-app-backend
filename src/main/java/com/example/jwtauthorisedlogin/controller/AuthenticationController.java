@@ -6,6 +6,7 @@ import com.example.jwtauthorisedlogin.user.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -73,5 +74,7 @@ public class AuthenticationController {
         return service.resend(request);
 //        return ResponseEntity.ok(service.resend(request));
     }
+
+
 
 }

@@ -13,6 +13,7 @@ import com.example.jwtauthorisedlogin.service.FoodService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -106,5 +107,9 @@ public class FoodController {
         }
     }
 
+    @GetMapping("/check-roles")
+    public String checkRoles(Authentication authentication) {
+        return authentication.getAuthorities().toString();
+    }
 
 }

@@ -1,7 +1,9 @@
 package com.example.jwtauthorisedlogin.service;
 
+import com.example.jwtauthorisedlogin.Entity.OrderHistory;
 import com.example.jwtauthorisedlogin.Entity.QRCode;
 import com.example.jwtauthorisedlogin.payload.request.QRCodeRequest;
+import com.example.jwtauthorisedlogin.repository.OrderHistoryRepository;
 import com.example.jwtauthorisedlogin.repository.QRCodeRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -9,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -16,7 +19,7 @@ public class QRCodeService {
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final int RANDOM_STRING_LENGTH = 25;
     private final QRCodeRepository qrCodeRepository;
-
+    private final OrderHistoryRepository orderHistoryRepository;
     public String generateQRCode() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
@@ -36,7 +39,7 @@ public class QRCodeService {
 
             return existingQRCode.getQrCodeString();
         }
-        else{
+        else {
             StringBuilder randomStringBuilder = new StringBuilder();
             SecureRandom secureRandom = new SecureRandom();
 
@@ -53,17 +56,26 @@ public class QRCodeService {
             qrCodeRepository.save(qrCode);
 
             return qrCodeString;
+
         }
+
     }
 
-    public boolean isValidQRCode(QRCodeRequest qrCodeRequest) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        QRCode qrCode = qrCodeRepository.findByEmail(email);
-        if (qrCode == null) {
-            return false;
+        public boolean isValidQRCode(QRCodeRequest qrCodeRequest) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+            QRCode qrCode = qrCodeRepository.findByEmail(email);
+            if (qrCode == null) {
+                return false;
+            }
+            qrCodeRepository.delete(qrCode);
+
+            List<OrderHistory> orderList=orderHistoryRepository.findAllByCurrentOrder(true);
+            for(OrderHistory orderHistory: orderList){
+                orderHistory.setCurrentOrder(false);
+                orderHistoryRepository.save(orderHistory);
+            }
+
+            return qrCode.getQrCodeString().equals(qrCodeRequest.getQrCodeString());
         }
-        qrCodeRepository.delete(qrCode);
-        return qrCode.getQrCodeString().equals(qrCodeRequest.getQrCodeString());
-    }
 }

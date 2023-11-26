@@ -1,15 +1,21 @@
 package com.example.jwtauthorisedlogin.controller;
 
+import com.example.jwtauthorisedlogin.Entity.Food;
 import com.example.jwtauthorisedlogin.payload.request.CanteenRequest;
 import com.example.jwtauthorisedlogin.payload.request.FoodItemRequest;
 import com.example.jwtauthorisedlogin.payload.response.MessageResponse;
+import com.example.jwtauthorisedlogin.payload.response.OrderHistoryResponse;
 import com.example.jwtauthorisedlogin.service.CanteenService;
 import com.example.jwtauthorisedlogin.service.FoodService;
+import com.example.jwtauthorisedlogin.service.PaymentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/admin")
@@ -17,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
     private final FoodService foodService;
     private final CanteenService canteenService;
+    private final PaymentService paymentService;
 
     @PostMapping("/create-food-item")
     public ResponseEntity<MessageResponse> createFoodItem(@Valid @RequestBody FoodItemRequest request){
@@ -50,6 +57,22 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/available/{canteenId}")
+    public ResponseEntity<List<Food>> available(@PathVariable Long canteenId){
+        try {
+            return ResponseEntity.ok(foodService.available(canteenId));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
 
+    @GetMapping("/order-history/{canteenId}")
+    public ResponseEntity<List<OrderHistoryResponse>> getOrderHistoryByCanteenId(@PathVariable Long canteenId) {
+        try{
+            return ResponseEntity.ok(paymentService.getOrderHistoryByCanteenId(canteenId));
+        } catch(IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
 
 }

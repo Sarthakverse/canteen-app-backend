@@ -12,7 +12,10 @@ import java.util.List;
 
 @Repository
 public interface OrderHistoryRepository extends JpaRepository<OrderHistory, Long> {
-    List<OrderHistory> findByUserEmail(String userEmail);
+    List<OrderHistory> findAllByUserEmail(String userEmail);
+    List<OrderHistory> findAllByCanteenId(Long canteenId);
+
+    List<OrderHistory> findAllByCurrentOrder(Boolean currentOrder);
 
     @Transactional
     @Modifying
