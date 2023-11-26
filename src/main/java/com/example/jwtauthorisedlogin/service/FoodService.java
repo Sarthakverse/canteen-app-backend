@@ -33,6 +33,7 @@ public class FoodService {
     private final UserWishlistRepository userWishlistRepository;
     private final CartRepository cartRepository;
     private final CanteenFoodRepository canteenFoodRepository;
+    private final OrderHistoryRepository orderHistoryRepository;
 
     public MessageResponse createFoodItem(FoodItemRequest request) {
         var food = new Food();
@@ -74,10 +75,11 @@ public class FoodService {
 
         if (optionalFood.isPresent()) {
             Food food = optionalFood.get();
-            cartRepository.deleteByFoodId(food);
+            cartRepository.deleteCartByFoodId(foodItemId);
             canteenFoodRepository.deleteByFood(food);
             userWishlistRepository.deleteByFood(food);
             foodRatingRepository.deleteByFoodItem(food);
+            orderHistoryRepository.deleteOrderHistoryByFoodId(foodItemId);
             foodRepository.deleteById(foodItemId);
             return MessageResponse.builder().message(food.getName() + " was deleted").build();
         } else {

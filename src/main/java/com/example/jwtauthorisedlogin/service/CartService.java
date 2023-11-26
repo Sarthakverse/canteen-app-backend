@@ -15,6 +15,7 @@ import com.example.jwtauthorisedlogin.user.User;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -64,8 +65,8 @@ public class CartService {
         return null;
     }
 
-
     @Transactional
+    @Modifying
     public ResponseEntity<MessageResponse> deleteCartItem(CartItemDeleteRequest cartItemDeleteRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) authentication.getPrincipal();
@@ -75,7 +76,7 @@ public class CartService {
                     .body(MessageResponse.builder().message("Item not found in the cart").build());
         }
 
-        cartRepository.deleteById(cartItem.getId());
+        cartRepository.deleteByFoodId(cartItem.getId());
 
         Food food = cartItem.getFoodId();
         food.setIsInCart(false);

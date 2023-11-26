@@ -37,7 +37,6 @@ public class OrderService {
             orderHistory.setUser(cartItem.getUser());
             orderHistory.setFoodId(cartItem.getFoodId());
             orderHistory.setOrderDateTime(LocalDateTime.now());
-
             orderHistoryRepository.save(orderHistory);
         }
         cartRepository.deleteByUserEmail(userEmail);
