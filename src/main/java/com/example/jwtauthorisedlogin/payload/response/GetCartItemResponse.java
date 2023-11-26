@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class GetCartItemResponse {
     private Long id;
     private String foodItemName;
+    private Long foodItemId;
     private Integer quantity;
     private Double price;
     private Long canteenId;

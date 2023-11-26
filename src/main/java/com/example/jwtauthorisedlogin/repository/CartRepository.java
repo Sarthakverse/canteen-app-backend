@@ -20,7 +20,7 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     List<Cart> findByUserEmail(String email);
     Optional<Cart> findById(Long id);
 
-    @Query("SELECT new com.example.jwtauthorisedlogin.payload.response.GetCartItemResponse(c.id, c.foodItemName, c.quantity, c.price , c.foodId.canteenId,c.foodId.averageRating) FROM Cart c WHERE c.user.email = :email")
+    @Query("SELECT new com.example.jwtauthorisedlogin.payload.response.GetCartItemResponse(c.id, c.foodItemName,c.foodId.id,c.quantity, c.price , c.foodId.canteenId,c.foodId.averageRating) FROM Cart c WHERE c.user.email = :email")
     List<GetCartItemResponse> findCartResponseByUserEmail(@Param("email") String email);
 
     Optional<Cart> findByFoodIdAndUser(Food foodId,User user);
