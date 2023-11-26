@@ -15,12 +15,11 @@ import java.util.Optional;
 public interface FoodRepository extends JpaRepository<Food,Long> {
     List<Food> findByCategory(Category category);
     Optional<Food> findById(Long id);
-    List<Food> findByNameContaining(String name);
 
     Food findByNameAndCanteenId(String name, Long canteenId);
     List<Food> findAllByNameContainingIgnoreCase(String foodName);
 
-
+    List<Food> findAllByCanteenIdAndIsAvailable(Long canteenId, Boolean isAvailable);
 
 
     //List<Food> findAllByCanteenIdAndNameContainingIgnoreCaseAndCategoryAndPriceBetweenAndVegAndAverageRatingAfter(Long id,String name, Category category, Double lowPrice, Double highPrice, Boolean veg, Double average_rating);

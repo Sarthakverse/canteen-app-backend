@@ -23,6 +23,7 @@ public class FoodItemRequest {
     private String foodImage;;
     private Long canteenId;
     private Boolean veg;
+    private Boolean isAvailable;
     @NotEmpty
     @Size(min = 3, max = 3)
     private List<String> ingredients;

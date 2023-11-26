@@ -44,6 +44,7 @@ public class FoodService {
         food.setCanteenId(request.getCanteenId());
         food.setFoodImage(request.getFoodImage());
         food.setVeg(request.getVeg());
+        food.setIsAvailable(request.getIsAvailable());
 
         food.setIngredients(request.getIngredients());
         food.setIngredientImageList(request.getIngredientImageList());
@@ -55,6 +56,7 @@ public class FoodService {
             existingFood.setPrice(request.getPrice());
             existingFood.setFoodImage(request.getFoodImage());
             existingFood.setVeg(request.getVeg());
+            existingFood.setIsAvailable(request.getIsAvailable());
             existingFood.setIngredients(request.getIngredients());
             existingFood.setIngredientImageList(request.getIngredientImageList());
             foodRepository.save(existingFood);
@@ -186,14 +188,15 @@ public class FoodService {
             return foodRepository.findById(id);
         }
 
-    // category list, name, veg
-
-    // findByjs.............(
     public List<Food> search(Long canteenId, String foodName, Category category, Double lowPrice, Double highPrice, Boolean veg, Double rating){
         List<Food> foodList=foodRepository.findFoodsByCriteria(canteenId,foodName,category,lowPrice,highPrice,veg,rating);
         System.out.println(foodList);
         return foodList;
         //return foodRepository.findAllByCanteenIdAndNameContainingIgnoreCaseAndCategoryAndPriceBetweenAndVegAndAverageRatingAfter(canteenId,foodName,category,lowPrice,highPrice,veg,rating);
+    }
+
+    public List<Food> available(Long id){
+        return foodRepository.findAllByCanteenIdAndIsAvailable(id,true);
     }
 
 

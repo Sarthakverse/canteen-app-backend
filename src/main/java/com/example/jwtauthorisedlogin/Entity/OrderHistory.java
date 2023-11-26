@@ -17,6 +17,8 @@ public class OrderHistory {
     private String foodItemName;
     private Integer quantity;
     private Double price;
+    private Boolean currentOrder;
+    private Long canteenId;
 
     @ManyToOne
     @JoinColumn(name = "user_email", referencedColumnName = "email")
