@@ -6,6 +6,7 @@ import com.example.jwtauthorisedlogin.payload.response.GetCartItemResponse;
 import com.example.jwtauthorisedlogin.user.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -25,8 +26,21 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     Optional<Cart> findByFoodIdAndUser(Food foodId,User user);
 
     @Transactional
-    void deleteByUserEmail(String userEmail);
-    void deleteByFoodId(Food foodId);
+    @Modifying
+    @Query(value = "DELETE FROM Cart c WHERE c.user.email = :userEmail")
+    void deleteByUserEmail(@Param("userEmail") String userEmail);
     Optional<Cart> findByFoodIdIdAndUserEmail(Long foodId, String userEmail);
+
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM _cart_ WHERE id=?1",nativeQuery = true)
+    void deleteByFoodId(Long id);
+
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM _cart_ WHERE food_item_id = :foodItemId", nativeQuery = true)
+    void deleteCartByFoodId(@Param("foodItemId") Long foodItemId);
+
+
 }
 
