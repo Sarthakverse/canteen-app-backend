@@ -20,24 +20,40 @@ public class QRCodeService {
     public String generateQRCode() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        StringBuilder randomStringBuilder = new StringBuilder();
-        SecureRandom secureRandom = new SecureRandom();
 
-        for (int i = 0; i < RANDOM_STRING_LENGTH; i++) {
-            int randomIndex = secureRandom.nextInt(CHARACTERS.length());
-            char randomChar = CHARACTERS.charAt(randomIndex);
-            randomStringBuilder.append(randomChar);
+        QRCode existingQRCode = qrCodeRepository.findByEmail(email);
+        if(existingQRCode != null){
+            StringBuilder randomStringBuilder = new StringBuilder();
+            SecureRandom secureRandom = new SecureRandom();
+
+            for (int i = 0; i < RANDOM_STRING_LENGTH; i++) {
+                int randomIndex = secureRandom.nextInt(CHARACTERS.length());
+                char randomChar = CHARACTERS.charAt(randomIndex);
+                randomStringBuilder.append(randomChar);
+            }
+            existingQRCode.setQrCodeString(randomStringBuilder.toString());
+            qrCodeRepository.save(existingQRCode);
+
+            return existingQRCode.getQrCodeString();
         }
-        String qrCodeString = randomStringBuilder.toString();
+        else{
+            StringBuilder randomStringBuilder = new StringBuilder();
+            SecureRandom secureRandom = new SecureRandom();
 
-         QRCode qrCode = new QRCode();
+            for (int i = 0; i < RANDOM_STRING_LENGTH; i++) {
+                int randomIndex = secureRandom.nextInt(CHARACTERS.length());
+                char randomChar = CHARACTERS.charAt(randomIndex);
+                randomStringBuilder.append(randomChar);
+            }
+            String qrCodeString = randomStringBuilder.toString();
+
+            QRCode qrCode = new QRCode();
             qrCode.setEmail(email);
-            qrCode.setQrCodeString(randomStringBuilder.toString());
+            qrCode.setQrCodeString(qrCodeString);
             qrCodeRepository.save(qrCode);
 
-
-
-        return qrCodeString;
+            return qrCodeString;
+        }
     }
 
     public boolean isValidQRCode(QRCodeRequest qrCodeRequest) {
