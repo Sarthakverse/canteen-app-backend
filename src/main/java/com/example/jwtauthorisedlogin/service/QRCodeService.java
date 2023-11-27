@@ -62,9 +62,7 @@ public class QRCodeService {
     }
 
         public boolean isValidQRCode(QRCodeRequest qrCodeRequest) {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String email = authentication.getName();
-            QRCode qrCode = qrCodeRepository.findByEmail(email);
+            QRCode qrCode = qrCodeRepository.findByQrCodeString(qrCodeRequest.getQrCodeString());
             if (qrCode == null) {
                 return false;
             }
@@ -76,6 +74,6 @@ public class QRCodeService {
                 orderHistoryRepository.save(orderHistory);
             }
 
-            return qrCode.getQrCodeString().equals(qrCodeRequest.getQrCodeString());
+            return true;
         }
 }
