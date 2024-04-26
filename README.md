@@ -1,5 +1,4 @@
 # canteen-app-backend
-# Canteen - App
 ### refer this postman link and fork it :- https://www.postman.com/rsarthak123/workspace/to-do-list/collection/29367403-01d3b9ca-cec8-4480-aa35-96b756a532ef?action=share&creator=29367403
 ### ![image](https://github.com/Sarthakverse/canteen-app-backend/assets/117356021/bc8e0345-37f0-453d-b0b7-e742f83dc22b)
 ### refer this documentatiion :- https://documenter.getpostman.com/view/29367403/2s9YXe7Q1u
