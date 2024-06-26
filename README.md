@@ -8,8 +8,9 @@
 
 ## Acknowledgements
 
-- [Aakarsh Singh - 50%Backend] (https://www.linkedin.com/in/aakarsh09z/) 
-- [Kavita Yadav - Designer] (https://www.linkedin.com/in/kavita-yadav-6b1759255/) 
+- [Aakarsh Singh - remaining 50% Apis](https://www.linkedin.com/in/aakarsh09z/) 
+- [Kavita Yadav - Designer](https://www.linkedin.com/in/kavita-yadav-6b1759255/)
+- [Rachit Katiyar - Frontend dev](https://www.linkedin.com/in/rachit-katiyar-800378275/)
 
 
 ## Inspired By
