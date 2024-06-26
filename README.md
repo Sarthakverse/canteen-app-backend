@@ -16,8 +16,8 @@
 ## Inspired By
 ![My first design](https://github.com/Sarthakverse/canteen-app-backend/assets/117356021/dbcf282b-06b5-4cad-8cab-c0d8d7eaa161)
 ![image](https://github.com/Sarthakverse/canteen-app-backend/assets/117356021/f5e77bb1-f268-4564-9685-9359667b934a)
-### Authentication Screens
 
+## Authentication Screens
 <img src="https://github.com/rockyhappy/CanteenApp/assets/115190222/7629f9cb-64fe-4550-8966-917217a5fb0f" alt="Login Screen" width="150">
 <img src="https://github.com/rockyhappy/CanteenApp/assets/115190222/aff2b6c7-b8e2-4899-85d8-dfde489a8e7d" alt="Signup Screen" width="150">
 <img src="https://github.com/rockyhappy/CanteenApp/assets/115190222/c3f738a4-13d6-4567-b9dc-abdcee7cd87e" alt="Forgot Password Screen" width="150">
@@ -28,10 +28,8 @@
 <img src="https://github.com/rockyhappy/CanteenApp/assets/115190222/2db87241-f7b3-4422-b856-ad544bb090c0" alt="Forgot Password Screen" width="150">
 <img src="https://github.com/rockyhappy/CanteenApp/assets/115190222/066c9911-59ee-484e-8258-ede746514e44" alt="Forgot Password Screen" width="150">
 
-### User Side Screens
+## User Side Screens
 <!-- Add screenshots for canteen selection, adding to cart, and payment gateway here -->
-
-
 <img src="https://github.com/rockyhappy/CanteenApp/assets/115190222/b1c70b05-41c9-4df6-b4e6-78d27dfcd65e" alt="Canteen Selection Screen" width="150">
 <img src="https://github.com/rockyhappy/CanteenApp/assets/115190222/29acae32-727a-4e69-bf70-07fd74ce9529" alt="Add to Cart Screen" width="150">
 <img src="https://github.com/rockyhappy/CanteenApp/assets/115190222/65375658-a73f-4c7d-8c11-abd9c64ebfd9" alt="Payment Gateway Screen" width="150">
@@ -49,7 +47,7 @@
 <img src="https://github.com/rockyhappy/CanteenApp/assets/115190222/6dfbd122-0009-472e-a831-f6d165b785ad" alt="Payment Gateway Screen" width="150">
 <img src="https://github.com/rockyhappy/CanteenApp/assets/115190222/97c7eba9-4077-4f3c-b9a3-b9144925d3e6" alt="Canteen Selection Screen" width="150">
 
-### Vendor Side Screens
+## Vendor Side Screens
 <!-- Add screenshots for dynamic menu management, order management, and refund button here -->
 <img src="https://github.com/rockyhappy/CanteenApp/assets/115190222/de38f339-d1ea-4e3a-9ee8-14ae01775f11" alt="Dynamic Menu Management Screen" width="150">
 <img src="https://github.com/rockyhappy/CanteenApp/assets/115190222/a1d2b7e4-cec0-4755-a7f2-f9ded3b0b33d" alt="Order Management Screen" width="150">
