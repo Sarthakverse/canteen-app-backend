@@ -8,8 +8,8 @@
 
 ## Acknowledgements
 
-- [Aakarsh Singh] ("https://www.linkedin.com/in/aakarsh09z/") - 50% backend
-- [Kavita Yadav] ("https://www.linkedin.com/in/kavita-yadav-6b1759255/") -Designer
+- [Aakarsh Singh - 50%Backend] (https://www.linkedin.com/in/aakarsh09z/) 
+- [Kavita Yadav - Designer] (https://www.linkedin.com/in/kavita-yadav-6b1759255/) 
 
 
 ## Inspired By
