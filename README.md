@@ -5,13 +5,6 @@
 
 - To ensure a comprehensive dining experience, the application includes a `**food item rating system**, where users can rate and remove ratings for various food items.` `**Payment integration**` with RazorPay facilitates seamless and secure transactions. Alongside these major features, the application incorporates numerous other minor features designed to improve user experience and functionality.
 
-
-## Acknowledgements
-
-- [Aakarsh Singh - remaining 50% Apis](https://www.linkedin.com/in/aakarsh09z/) 
-- [Kavita Yadav - Designer](https://www.linkedin.com/in/kavita-yadav-6b1759255/)
-- [Rachit Katiyar - Frontend dev](https://www.linkedin.com/in/rachit-katiyar-800378275/)
-
 ## Inspired By
 ![My first design](https://github.com/Sarthakverse/canteen-app-backend/assets/117356021/dbcf282b-06b5-4cad-8cab-c0d8d7eaa161)
 ![image](https://github.com/Sarthakverse/canteen-app-backend/assets/117356021/f5e77bb1-f268-4564-9685-9359667b934a)
